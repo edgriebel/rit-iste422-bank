@@ -1,0 +1,34 @@
+SavingsAccount:
+
+- no-arg constructor
+
+- Regular constructor
+  - what if interest rate is negative?
+  - what if any arguments are null?
+  - if I pass a name, does correct name get stored?
+    - same for balance, interest rate, owner
+
+- monthEnd
+  - is calculation correct?
+  - what if interest rate is zero?
+  - what if interest rate is negative?
+
+- toString
+  - Does it return a string?
+  - Does it display correct interest rate?
+
+Account:
+- Withdraw
+  - does withdraw work?
+  - does correct item show up in register?
+  - Exception thrown if we w/d below zero?
+
+- Deposit
+  - Does deposit work?
+  - What if deposit is negative?
+    - Do nothing or throw exception?
+
+Owner:
+- Constructor:
+  - Q: is it OK to have null/emtpy string for name?
+  - Does name get set correctly?

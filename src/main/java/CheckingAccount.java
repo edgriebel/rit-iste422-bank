@@ -26,7 +26,10 @@ public class CheckingAccount extends Account {
      * @throws Exception if negative balance
      */
     public int writeCheck(String name, double amount) throws Exception {
+    	logger.debug("Balance before check:" + getBalance() + " check amount: " + amount);
         withdraw(amount, String.format("Check %d", checkNumber));
+    	logger.debug("Balance after check:" + getBalance());
+
         return checkNumber++;
     }
 

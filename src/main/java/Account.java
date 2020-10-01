@@ -13,10 +13,7 @@ public abstract class Account {
     protected Register register;
 
     public Account() {
-        balance = 0.0;
-        name = "";
-        register = new Register();
-        owner = new Owner(null);
+    	this("", 0.0, new Owner("NO OWNER"));
     }
 
     public Account(String name, double balance, Owner owner) {
@@ -41,8 +38,14 @@ public abstract class Account {
     }
 
     public void withdraw(double amount, String registerEntry) {
-        balance =- amount;
+    	logger.debug("Before w/d "+ getBalance());
+        balance = balance - amount;
+        logger.debug("After w/d " + getBalance());
         register.add(registerEntry, amount);
+    }
+    
+    public String getName() {
+    	return name;
     }
 
     public Register getRegister() {

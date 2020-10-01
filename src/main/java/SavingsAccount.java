@@ -16,6 +16,10 @@ public class SavingsAccount extends Account {
         logger.debug("Created savings account:" + this);
     }
 
+    public double getInterestRate() {
+    	return interestRate;
+    }
+    
     @Override
     public void monthEnd() {
         double interest = interestRate * getBalance() / 12;
