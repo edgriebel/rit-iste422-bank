@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
 }
 
 group 'edu.rit.iste-422'
@@ -21,6 +22,18 @@ application {
 repositories {
     mavenCentral()
 }
+
+checkstyle {
+  configFile file("${project.rootDir}/config/checkstyle/sun_checks.xml")
+}
+
+task checkstyleHtml { doLast {
+    ant.xslt(in: checkstyleMain.reports.xml.destination,
+             style: file('/config/checkstyle-noframes-sorted.xsl'),
+             out: new File(checkstyleMain.reports.xml.destination.parent, 'main.html'))
+} }
+
+checkstyleMain.finalizedBy checkstyleHtml
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
