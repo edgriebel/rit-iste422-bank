@@ -14,6 +14,7 @@ public class AccountTest {
 	
 	@Before
 	public void createAccount() {
+		// because Account is an abstract we need to provide an impl for monthEnd
 		account = new Account() { 
 			@Override 
 			public void monthEnd() { 

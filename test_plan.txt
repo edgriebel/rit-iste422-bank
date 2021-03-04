@@ -1,14 +1,23 @@
 Account:
 --------
-- Withdraw
-  - does withdraw work?
-  - does correct item show up in register?
-  - Exception thrown if we w/d below zero?
+- Creation
+  - Given a new account, when we create with balance of 0, then Balance should be 0
+  - Given a new account, when we create with balance of 0, then register should have only opening amount
+  - Given a new account, when we create with balance of 100, then Balance should be 100
+  - Given a new account, when we create with balance of 100, then register should have only opening amount
 
 - Deposit
   - Does deposit work?
+    - Given a new account, When we deposit $10, then balance should be $10
+    - Given a new account, when we deposit $10, then register should have $10
   - What if deposit is negative?
-    - Do nothing or throw exception?
+    - Q: Do nothing or throw exception?
+
+- Withdraw
+  - does withdraw work?
+    - Tests?
+  - does correct item show up in register?
+  - Exception thrown if we w/d below zero?
 
 SavingsAccount:
 ---------------
@@ -18,16 +27,19 @@ SavingsAccount:
 
 - Regular constructor
   - what if interest rate is negative?
-  - what if any arguments are null?
+    - given no account, when create with negative interest rate, then an exception is thrown
+  - Q: what if any arguments are null?
   - if I pass a name, does correct name get stored?
+    - given no account, when created with name, then account has correct name
   - if I pass a balance, does correct balance get stored?
-  - if I pass a owner, does correct interest get stored?
+    - given no account, when created with balance, then account has correct balance
+  - if I pass an interest rate, does correct interest get stored?
   - if I pass a owner, does correct owner get stored?
 
 - monthEnd
   - is calculation correct? (how do we verify?)
-  - If interest rate is zero, output should be ...
-  - If interest rate is negative, output should be...
+  - Do we write the interest to the register?
+  - If interest rate is zero, the register should be ...
 
 - toString
   - Does it return a string?
