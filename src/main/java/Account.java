@@ -29,7 +29,10 @@ public abstract class Account {
     }
 
     public void deposit(double amount, String registerEntry) {
+        logger.info(name + " Depositing " + amount);
+        logger.debug(name + " Balance before deposit: " + balance);
         balance += amount;
+        logger.debug(name + " Balance after deposit: " + balance);
         register.add(registerEntry, amount);
     }
 
@@ -38,9 +41,9 @@ public abstract class Account {
     }
 
     public void withdraw(double amount, String registerEntry) {
-    	logger.debug("Before w/d "+ getBalance());
+    	logger.debug(name + " Before w/d "+ getBalance());
         balance = balance - amount;
-        logger.debug("After w/d " + getBalance());
+        logger.debug(name + " After w/d " + getBalance());
         register.add(registerEntry, amount);
     }
     
