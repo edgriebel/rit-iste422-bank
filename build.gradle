@@ -17,7 +17,7 @@ test {
 }
 
 application {
-    mainClassName = javaMainClass
+    mainClass = javaMainClass
 }
 
 repositories {
@@ -30,8 +30,18 @@ checkstyle {
 
 tasks.withType(Checkstyle) {
 	reports {
-		html.enabled = true
+		html.required = true
 	}
+}
+
+pmd {
+  ignoreFailures = true
+  consoleOutput = true
+  ruleSets = [
+	"category/java/errorprone.xml", 
+	// "category/java/design.xml", 
+	"category/java/performance.xml"
+	] 
 }
 
 dependencies {
