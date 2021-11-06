@@ -12,6 +12,9 @@ public class SavingsAccount extends Account {
 
     public SavingsAccount(String name, double balance, double interestRate, Owner owner) {
         super(name, balance, owner);
+        if (interestRate < 0) {
+            throw new IllegalArgumentException("Interest rate must be >= 0");
+        }
         this.interestRate = interestRate;
         logger.debug("Created savings account:" + this);
     }
@@ -22,8 +25,14 @@ public class SavingsAccount extends Account {
     
     @Override
     public void monthEnd() {
-        double interest = interestRate * getBalance() / 12;
-        // should we do something here??
+        if (getBalance() < getMinimumBalance()) {
+            withdraw(getBelowMinimumFee(), "MINIMUM BALANCE CHARGE");
+        }
+        double interest = Math.round(interestRate * getBalance() / 12d * 100d) * 100d;
+        // should we do something more here??
+        if (interest > 0d) {
+            deposit(interest, "INTEREST");
+        }
     }
 
     public String toString() {
