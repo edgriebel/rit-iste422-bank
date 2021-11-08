@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CheckingAccountTestRunner {
-    public static Logger logger = LogManager.getLogger(CheckingAccountTestRunner.class);
+public class CheckingAccountTestFixture {
+    public static Logger logger = LogManager.getLogger(CheckingAccountTestFixture.class);
     // TODO We should probably read the file from classpath instead of hardcoding the pathname
     static final String TEST_FILE = "src/test/resources/CheckingAccountTest.csv";
 
@@ -72,7 +72,7 @@ public class CheckingAccountTestRunner {
     private static void runTests() {
         JUnitCore jc = new JUnitCore();
         jc.addListener(new TextListener(System.out));
-        Result r = jc.run(CheckingAccountTestRunner.class);
+        Result r = jc.run(CheckingAccountTestFixture.class);
         System.out.printf("Tests run: %d Passed: %d Failed: %d\n",
                 r.getRunCount(), r.getRunCount() - r.getFailureCount(), r.getFailureCount());
         System.out.println("Failures:");
