@@ -10,7 +10,7 @@ public class Runner {
 
     public static void main(String[] args) {
         Logger logger = LogManager.getLogger(Runner.class);
-
+        System.out.println("Args: " + java.util.Arrays.asList(args));
         Owner owner = new Owner("Jane Smith");
 
 //        LogMana1           logger.setLevel(Level.FINE);

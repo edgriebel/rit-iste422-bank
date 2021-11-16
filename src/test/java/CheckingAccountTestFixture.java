@@ -32,10 +32,11 @@ public class CheckingAccountTestFixture {
     private static List<TestScenario> testScenarios;
 
     @Test
-    public void testParams() throws Exception {
-        assertThat("testScenarios object must be populated", testScenarios, notNullValue());
+    public void runTestScenarios() throws Exception {
+        assertThat("testScenarios object must be populated, is this running from main()?",
+                testScenarios, notNullValue());
 
-        // iterate over all test params
+        // iterate over all test scenarios
         for (int testNum = 0; testNum < testScenarios.size(); testNum++) {
             TestScenario scenario = testScenarios.get(testNum);
             logger.info("**** Running test for {}", scenario);
@@ -69,7 +70,7 @@ public class CheckingAccountTestFixture {
         }
     }
 
-    private static void runTests() {
+    private static void runJunitTests() {
         JUnitCore jc = new JUnitCore();
         jc.addListener(new TextListener(System.out));
         Result r = jc.run(CheckingAccountTestFixture.class);
@@ -81,7 +82,8 @@ public class CheckingAccountTestFixture {
         }
     }
 
-    private static List<Double> parseAmountList(String amounts) {
+    // TODO this could be added to TestScenario class
+    private static List<Double> parseListOfAmounts(String amounts) {
         if (amounts.trim().isEmpty()) {
             return List.of();
         }
@@ -94,23 +96,30 @@ public class CheckingAccountTestFixture {
         return ret;
     }
 
-    private static List<TestScenario> parseScenarioStrings(String [] scenarioStrings) {
+    // TODO this could be added to TestScenario class
+    private static TestScenario parseScenarioString(String scenarioAsString) {
+        String [] scenarioValues = scenarioAsString.split(",");
+        // should probably validate length here
+        double initialBalance = Double.parseDouble(scenarioValues[0]);
+        List<Double> checks = parseListOfAmounts(scenarioValues[1]);
+        List<Double> wds = parseListOfAmounts(scenarioValues[2]);
+        List<Double> deps = parseListOfAmounts(scenarioValues[3]);
+        double finalBalance = Double.parseDouble(scenarioValues[4]);
+        TestScenario scenario = new TestScenario(
+                initialBalance, checks, wds, deps, false, finalBalance
+        );
+        return scenario;
+    }
+
+    private static List<TestScenario> parseScenarioStrings(String ... scenarioStrings) {
         logger.info("Running test scenarios...");
         List<TestScenario> scenarios = new ArrayList<>();
         for (String scenarioAsString : scenarioStrings) {
             if (scenarioAsString.trim().isEmpty()) {
                 continue;
             }
-            String [] scenarioValues = scenarioAsString.split(",");
-            // should probably validate length here
-            double initialBalance = Double.parseDouble(scenarioValues[0]);
-            List<Double> checks = parseAmountList(scenarioValues[1]);
-            List<Double> wds = parseAmountList(scenarioValues[2]);
-            List<Double> deps = parseAmountList(scenarioValues[3]);
-            double finalBalance = Double.parseDouble(scenarioValues[4]);
-            scenarios.add(new TestScenario(
-                    initialBalance, checks, wds, deps, false, finalBalance
-            ));
+            TestScenario scenario = parseScenarioString(scenarioAsString);
+            scenarios.add(scenario);
         }
         return scenarios;
     }
@@ -118,16 +127,17 @@ public class CheckingAccountTestFixture {
     public static void main(String [] args) throws IOException {
         System.out.println("START");
 
-        // Manually populate the list of scenarios we want to test
+        // We can:
+        // ... manually populate the list of scenarios we want to test...
         System.out.println("\n\n****** FROM OBJECTS ******\n");
         testScenarios = List.of(
                 new TestScenario(100, List.of(), List.of(), List.of(), false, 100),
                 new TestScenario(100, List.of(10d), List.of(), List.of(), false, 90),
                 new TestScenario(100, List.of(10.,20.), List.of(), List.of(10.), true, 80)
                 );
-        runTests();
+        runJunitTests();
 
-        // now populate with scenarios from a CSV file
+        // ...or create scenarios from a collection of strings...
         // Format for each line: BALANCE,check_amt|check_amt|...,withdraw_amt|...,deposit_amt|...,end_balance
         // note we left out runMonthEnd from our file format
 
@@ -141,16 +151,21 @@ public class CheckingAccountTestFixture {
         };
         List<TestScenario> parsedScenarios = parseScenarioStrings(scenarioStrings);
         testScenarios = parsedScenarios;
-        runTests();
+        runJunitTests();
 
+        // ...or populate with scenarios from a CSV file...
         // now load these same scenarios from a file plus one more
         System.out.println("\n\n****** FROM FILE ******\n");
-        List<String> lst = Files.readAllLines(Paths.get(TEST_FILE));
-        testScenarios = parseScenarioStrings(lst.toArray(String[]::new));
-        runTests();
+        // We could get the filename from the cmdline, e.g. "-f CheckingAccountScenarios.csv"
+        List<String> scenarioStringsFromFile = Files.readAllLines(Paths.get(TEST_FILE));
+        testScenarios = parseScenarioStrings(scenarioStringsFromFile.toArray(String[]::new));
+        runJunitTests();
 
-        // We could also demonstrate reading a scenario from stdin via Scanner() or cmdline via args
-
+        // ...or, we could also specify a single scenario on the command line,
+        // for example "-t '10, 20|20, , 40|10, 0'"
+        // Note the single-quotes because of the embedded spaces and the pipe symbol
+        System.out.println("Command-line arguments passed in: " + java.util.Arrays.asList(args));
+        
         System.out.println("DONE");
     }
 }

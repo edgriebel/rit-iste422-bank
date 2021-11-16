@@ -46,7 +46,7 @@ public abstract class Account {
     	logger.debug(name + " Before w/d "+ getBalance());
         balance = balance - amount;
         logger.debug(name + " After w/d " + getBalance());
-        register.add(registerEntry, amount);
+        register.add(registerEntry, -1d * amount);
     }
 
     public String getName() {
