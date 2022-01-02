@@ -3,6 +3,8 @@ import org.apache.logging.log4j.Logger;
 
 public class SavingsAccount extends Account {
     public static Logger logger = LogManager.getLogger(SavingsAccount.class);
+
+    /** interestRate is an annualized fractional value, e.g. 1% interest is 0.01 */
     double interestRate;
 
     public SavingsAccount() {
@@ -28,11 +30,11 @@ public class SavingsAccount extends Account {
         if (getBalance() < getMinimumBalance()) {
             withdraw(getBelowMinimumFee(), "MINIMUM BALANCE CHARGE");
         }
-        double interest = Math.round(interestRate * getBalance() / 12d * 100d) * 100d;
-        // should we do something more here??
+        double interest = Math.round(interestRate * getBalance() / 12d * 100d) / 100d;
         if (interest > 0d) {
             deposit(interest, "INTEREST");
         }
+        // Question: what else do we need to do here??
     }
 
     public String toString() {
