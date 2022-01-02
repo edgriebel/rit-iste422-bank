@@ -3,6 +3,8 @@ import org.apache.logging.log4j.Logger;
 
 public class SavingsAccount extends Account {
     public static Logger logger = LogManager.getLogger(SavingsAccount.class);
+
+    /** interestRate is an annualized fractional value, e.g. 1% interest is 0.01 */
     double interestRate;
 
     public SavingsAccount() {
@@ -23,7 +25,7 @@ public class SavingsAccount extends Account {
     @Override
     public void monthEnd() {
         double interest = interestRate * getBalance() / 12;
-        // should we do something here??
+        // Question: what else do we need to do here??
     }
 
     public String toString() {
