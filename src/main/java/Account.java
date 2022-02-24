@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Account {
     public static Logger logger = LogManager.getLogger(Account.class.getName());
+    public static Logger timeLogger = LogManager.getLogger("timer." + Account.class.getName());
 
     private double balance;
     protected String name;
@@ -17,11 +18,13 @@ public abstract class Account {
     }
 
     public Account(String name, double balance, Owner owner) {
+        timeLogger.info("start _init");
         this.name = name;
         this.balance = balance;
         this.owner = owner;
         register = new Register();
         register.add("OPEN", balance);
+        timeLogger.info("end _init");
     }
 
     public void deposit(double amount) throws Exception {
@@ -29,11 +32,13 @@ public abstract class Account {
     }
 
     public void deposit(double amount, String registerEntry) {
+        timeLogger.info("start deposit");
         logger.info(name + " Depositing " + amount);
         logger.debug(name + " Balance before deposit: " + balance);
         balance += amount;
         logger.debug(name + " Balance after deposit: " + balance);
         register.add(registerEntry, amount);
+        timeLogger.info("end deposit");
     }
 
     public void withdraw(double amount) throws Exception {
@@ -41,10 +46,12 @@ public abstract class Account {
     }
 
     public void withdraw(double amount, String registerEntry) {
+        timeLogger.info("start withdraw");
     	logger.debug(name + " Before w/d "+ getBalance());
         balance = balance - amount;
         logger.debug(name + " After w/d " + getBalance());
         register.add(registerEntry, amount);
+        timeLogger.info("end withdraw");
     }
     
     public String getName() {
@@ -64,6 +71,7 @@ public abstract class Account {
     }
 
     public List<String> generateStatement() {
+        timeLogger.info("start generateStatement");
         monthEnd();
 
         List<String> rtn = new ArrayList<>();
@@ -72,6 +80,7 @@ public abstract class Account {
             String val = String.format("%8s: %f", entry.getKey(), entry.getValue());
             rtn.add(val);
         }
+        timeLogger.info("end generateStatement");
         return rtn;
     }
 
