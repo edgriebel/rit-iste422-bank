@@ -13,15 +13,20 @@
         </File>
     </Appenders>
     <Loggers>
-        <Root level="info">
-            <AppenderRef ref="Console"/>
+        <Root level="debug">
+            <AppenderRef ref="Console" level="info"/>
             <AppenderRef ref="MyFile" level="debug"/>
+            <!-- this writes timing information, see logging to "timer" -->
             <AppenderRef ref="Timer" level="off"/> <!-- capture nothing by default -->
         </Root>
+        <!-- This is an example of how we can up the logging for a specific class -->
+        <!-- In this case, we may be actively developing SavingsAccount so we want
+             to see debug on the console for this class -->
         <Logger name="SavingsAccount" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
-	<Logger name="timer" level="info" additivity="false">
+        <!-- and here we enable the timers to go to the Timer ref -->
+        <Logger name="timer" level="info" additivity="false">
             <AppenderRef ref="Timer"/>
         </Logger>
     </Loggers>

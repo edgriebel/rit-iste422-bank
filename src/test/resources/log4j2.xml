@@ -9,6 +9,9 @@
         </File>
     </Appenders>
     <Loggers>
+        <!-- in testing mode we send everything to console -->
+        <!-- In a "real" environment we'd probably want to send only errors to the 
+             console and look at detailed output in our Continuous Integration tool -->
         <Root level="debug">
             <AppenderRef ref="Console" />
             <AppenderRef ref="MyFile"/>
