@@ -23,6 +23,13 @@ application {
     mainClass = javaMainClass
 }
 
+task runCheckingFixture(type: JavaExec) {
+    group = "Execution"
+    description = "Run CheckingAccountTestFixture class"
+    classpath = sourceSets.test.runtimeClasspath
+    main = "CheckingAccountTestFixture"
+}
+
 repositories {
     mavenCentral()
 }

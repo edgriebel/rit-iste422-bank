@@ -12,6 +12,8 @@ public abstract class Account {
     protected String name;
     protected Owner owner;
     protected Register register;
+    protected double minimumBalance;
+    protected double belowMinimumFee;
 
     public Account() {
     	this("", 0.0, new Owner("NO OWNER"));
@@ -50,10 +52,10 @@ public abstract class Account {
     	logger.debug(name + " Before w/d "+ getBalance());
         balance = balance - amount;
         logger.debug(name + " After w/d " + getBalance());
-        register.add(registerEntry, amount);
+        register.add(registerEntry, -1d * amount);
         timeLogger.info("end withdraw");
     }
-    
+
     public String getName() {
     	return name;
     }
@@ -68,6 +70,22 @@ public abstract class Account {
 
     public double getBalance() {
         return balance;
+    }
+
+    public void setMinimumBalance(double minimumBalance) {
+        this.minimumBalance = minimumBalance;
+    }
+
+    public double getMinimumBalance() {
+        return minimumBalance;
+    }
+
+    public void setBelowMinimumFee(double belowMinimumFee) {
+        this.belowMinimumFee = belowMinimumFee;
+    }
+
+    public double getBelowMinimumFee() {
+        return belowMinimumFee;
     }
 
     public List<String> generateStatement() {

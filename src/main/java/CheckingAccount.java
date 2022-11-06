@@ -35,6 +35,9 @@ public class CheckingAccount extends Account {
 
     @Override
     public void monthEnd() {
+        if (getBalance() < getMinimumBalance()) {
+            withdraw(getBelowMinimumFee(), "MINIMUM BALANCE CHARGE");
+        }
         logger.info("Check # at end of month: " + checkNumber);
         register.add("END CHECK", (double)checkNumber);
     }
