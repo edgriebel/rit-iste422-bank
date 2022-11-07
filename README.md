@@ -17,14 +17,17 @@ Ensure that a JDK >= 16 is installed
 
 ## JDK Installation instructions
 ### macOS
+_TODO_
 ### Linux
+_TODO_
 ### Windows
+_TODO_
 ### [repl.it](https://replit.com)
 
 # UML Entity diagram
 
 [![demo](https://puml-demo.herokuapp.com/github/edgriebel/rit-iste422-bank/blob/master/uml_entity.puml)](https://puml-demo.herokuapp.com/github/edgriebel/rit-iste422-bank/blob/master/uml_entity.puml)
 
-Source for diagram: [uml_entity.puml](um_entity.puml)
+Source for diagram: [uml_entity.puml](uml_entity.puml)
 
 
