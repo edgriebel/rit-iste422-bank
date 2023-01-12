@@ -1,3 +1,4 @@
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,13 +13,14 @@ public class Runner {
         Logger logger = LogManager.getLogger(Runner.class);
         System.out.println("Args: " + java.util.Arrays.asList(args));
         Owner owner = new Owner("Jane Smith");
+        Random random = new Random();
 
 //        LogMana1           logger.setLevel(Level.FINE);
         System.out.println("Creating accounts....");
         SavingsAccount savings = new SavingsAccount(
-                "Savings", 1000.0, 0.12, owner);
+                "Savings", random.nextInt(), 1000.0, 0.12, owner.id());
         CheckingAccount checking = new CheckingAccount(
-                "Checking", 100.0, owner);
+                "Checking", random.nextInt(), 100.0, random.nextInt(), owner.id());
 
         System.out.println("Accounts:");
         System.out.println(savings);

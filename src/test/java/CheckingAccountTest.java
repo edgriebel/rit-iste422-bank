@@ -11,7 +11,7 @@ public class CheckingAccountTest {
 	@Before
 	public void setup() {
 		System.out.println("Creating a CheckingAccount");
-        acct = new CheckingAccount("test", 100, null);
+        acct = new CheckingAccount("test", -1, 100, 0, -1);
         assertThat(acct, notNullValue());
 	}
 	

@@ -1,29 +1,33 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class Account {
+public abstract class Account implements Persistable {
     public static Logger logger = LogManager.getLogger(Account.class.getName());
     public static Logger timeLogger = LogManager.getLogger("timer." + Account.class.getName());
 
+    private Long id;
     private double balance;
     protected String name;
-    protected Owner owner;
+    private Long ownerId;
     protected Register register;
     protected double minimumBalance;
     protected double belowMinimumFee;
 
     public Account() {
-    	this("", 0.0, new Owner("NO OWNER"));
+    	this("", -1, 0.0, -1);
     }
 
-    public Account(String name, double balance, Owner owner) {
+    public Account(String name, long id, double balance, long ownerId) {
         timeLogger.info("start _init");
+        this.id = id;
         this.name = name;
         this.balance = balance;
-        this.owner = owner;
+        this.ownerId = ownerId;
         register = new Register();
         register.add("OPEN", balance);
         timeLogger.info("end _init");
@@ -103,8 +107,34 @@ public abstract class Account {
     }
 
     public String toString() {
-        return String.format("%s\tAccount name: %s\tBalance: %s", owner, name, balance);
+        return String.format("%s\tAccount id: %d ownerId: %d\tBalance: %s", name, id, ownerId, balance);
     }
 
     abstract public void monthEnd();
+
+    @Override
+    public String toCSV() throws SerializationException {
+        throw new UnsupportedOperationException();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Double.compare(account.balance, balance) == 0 && Double.compare(account.minimumBalance, minimumBalance) == 0 && Double.compare(account.belowMinimumFee, belowMinimumFee) == 0 && id.equals(account.id) && name.equals(account.name) && ownerId.equals(account.ownerId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, balance, name, ownerId, minimumBalance, belowMinimumFee);
+    }
 }

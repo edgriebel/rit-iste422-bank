@@ -1,1 +1,64 @@
-record Owner(String name) { }
+import java.util.Date;
+import java.util.Objects;
+import java.util.Random;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+
+record Owner(String name, long id, Date dob, String ssn, String address, String address2, String city, String state, String zip) implements Persistable {
+    public Owner(String name) {
+        this(name, new Random().nextLong(), new Date(0), null, null, null, null, null, null);
+    }
+    @Override
+    public String toCSV() throws SerializationException {
+        return String.format("%d,%s,%d,%s,%s,%s,%s,%s,%s,%s",
+                id,
+                name,
+                dob.getTime(),
+                (ssn != null) ? ssn : "",
+                (address != null) ? address : "",
+                (address2 != null) ? address2 : "",
+                (city != null) ? city : "",
+                (state != null) ? state : "",
+                (zip != null) ? zip : "",
+                "v1"
+        );
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public static Owner fromCSV(final String csv) throws SerializationException {
+        final String [] fields = csv.split(",");
+        final String version = fields[fields.length-1];
+        if (! version.equals("v1")) {
+            throw new SerializationException("Verison incorrect or missing, expected v1 but was " + version);
+        }
+        if (fields.length != 10) {
+            throw new SerializationException("not enough fields, should be 10 but were " + fields.length + ": " + csv);
+        }
+        return new Owner(
+            fields[1].trim(),
+            Long.parseLong(fields[0]),
+            new Date(Long.parseLong(fields[2])),
+            fields[3].trim(),
+            fields[4].trim(),
+            fields[5].trim(),
+            fields[6].trim(),
+            fields[7].trim(),
+            fields[8].trim()
+        );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Owner owner = (Owner) o;
+        return id == owner.id && name.equals(owner.name) && Objects.equals(dob, owner.dob) && Objects.equals(ssn, owner.ssn) && Objects.equals(address, owner.address) && Objects.equals(address2, owner.address2) && Objects.equals(city, owner.city) && Objects.equals(state, owner.state) && Objects.equals(zip, owner.zip);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, id, dob, ssn, address, address2, city, state, zip);
+    }
+}
