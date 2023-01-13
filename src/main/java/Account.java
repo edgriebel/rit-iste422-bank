@@ -92,31 +92,35 @@ public abstract class Account implements Persistable {
         return belowMinimumFee;
     }
 
-    public List<String> generateStatement() {
+    public Statement generateStatement() {
         timeLogger.info("start generateStatement");
-        monthEnd();
 
         List<String> rtn = new ArrayList<>();
         List<Map.Entry<String, Double>> registerEntries = register.getEntries();
         for (Map.Entry<String, Double> entry : registerEntries) {
-            String val = String.format("%8s: %f", entry.getKey(), entry.getValue());
+            String val = String.format("%-8s: %,.2f", entry.getKey(), entry.getValue());
             rtn.add(val);
         }
         timeLogger.info("end generateStatement");
-        return rtn;
+        logger.info("Account {}: {} register entries", name, rtn.size());
+        return new Statement(name, balance, rtn);
     }
 
     public String toString() {
-        return String.format("%s\tAccount id: %d ownerId: %d\tBalance: %s", name, id, ownerId, balance);
+        return String.format("Account:\t'%s'\tid: %d\townerId: %d\tBalance: %s", name, id, ownerId, balance);
     }
 
     abstract public void monthEnd();
 
     @Override
     public String toCSV() throws SerializationException {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("METHOD NOT IMPLEMENTED");
     }
 
+    public String [] columns()
+    {
+        throw new UnsupportedOperationException("METHOD NOT IMPLEMENTED");
+    }
     public Long getId() {
         return id;
     }

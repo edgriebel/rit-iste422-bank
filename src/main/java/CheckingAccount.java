@@ -4,6 +4,9 @@ import org.apache.logging.log4j.Logger;
 
 public class CheckingAccount extends Account {
     public static Logger logger = LogManager.getLogger(CheckingAccount.class.getName());
+    public static final String [] COLUMNS = {
+        "id", "name", "balance", "checkNumber", "ownerId", "version"
+    };
 
     private long checkNumber;
 
@@ -45,7 +48,7 @@ public class CheckingAccount extends Account {
     }
 
     public String toString() {
-        return "Checking Account " + super.toString() + " Current Check #" + checkNumber;
+        return "Checking " + super.toString() + " Current Check #" + checkNumber;
     }
 
     public static CheckingAccount fromCSV(String csv) throws SerializationException {
@@ -54,8 +57,9 @@ public class CheckingAccount extends Account {
         if (! version.equals("v1")) {
             throw new SerializationException("Verison incorrect or missing, expected v1 but was " + version);
         }
-        if (fields.length != 6) {
-            throw new SerializationException("not enough fields, should be 6 but were " + fields.length + ": " + csv);
+        if (fields.length != COLUMNS.length) {
+            throw new SerializationException(String.format("not enough fields, should be %d but was %d: %s",
+                    COLUMNS.length, fields.length, csv));
         }
         return new CheckingAccount(
                 // Fields in object: String name, long id, double balance, long checkNumber, long ownerId
@@ -65,6 +69,10 @@ public class CheckingAccount extends Account {
                 Long.parseLong(fields[3].trim()),
                 Long.parseLong(fields[4].trim())
         );
+    }
+
+    public String [] columns() {
+        return COLUMNS;
     }
 
     public String toCSV() {

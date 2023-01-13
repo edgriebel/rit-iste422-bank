@@ -18,9 +18,9 @@ public class Runner {
 //        LogMana1           logger.setLevel(Level.FINE);
         System.out.println("Creating accounts....");
         SavingsAccount savings = new SavingsAccount(
-                "Savings", random.nextInt(), 1000.0, 0.12, owner.id());
+                "Savings", random.nextInt(1000), 1000.0, 0.12, owner.id());
         CheckingAccount checking = new CheckingAccount(
-                "Checking", random.nextInt(), 100.0, random.nextInt(), owner.id());
+                "Checking", random.nextInt(1000), 100.0, random.nextInt(500), owner.id());
 
         System.out.println("Accounts:");
         System.out.println(savings);

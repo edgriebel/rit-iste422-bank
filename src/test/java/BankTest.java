@@ -18,22 +18,20 @@ public class BankTest {
         for (int i = 0; i < 1; i++) {
             long ownerId = r.nextLong();
             bank.owners.put(ownerId, new Owner("cust" + i, ownerId, new Date(), "" + i, i + " Main St", null, null, null, null));
-            bank.savingsAccounts.put(i+100L, new SavingsAccount("acct_" + i, i+100L, i * 100, i * 0.01, ownerId));
-            bank.checkingAccounts.put(i+200L, new CheckingAccount("acct_" + i, i+200L, i * 200, i, ownerId));
+            bank.accounts.put(i+100L, new SavingsAccount("acct_" + i, i+100L, i * 100, i * 0.01, ownerId));
+            bank.accounts.put(i+200L, new CheckingAccount("acct_" + i, i+200L, i * 200, i, ownerId));
         }
         bank.validateAccounts();
         // save contents for later
         var origOwners = bank.owners.values();
-        var origChecking = bank.checkingAccounts.values();
-        var origSavings = bank.savingsAccounts.values();
+        var origAccounts = bank.accounts.values();
         String TEMP = System.getProperty("java.io.tmpdir") + File.separator;
         int savedCount = bank.saveAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv");
         int loadedCount = bank.loadAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv");
         assertThat("Records saved should be the same as records loaded", savedCount, is(loadedCount));
         bank.validateAccounts();
         assertThat(bank.owners.values(), hasItems(origOwners.toArray(new Owner[0])));
-        assertThat(bank.savingsAccounts.values(), hasItems(origSavings.toArray(new SavingsAccount[0])));
-        assertThat(bank.checkingAccounts.values(), hasItems(origChecking.toArray(new CheckingAccount[0])));
+        assertThat(bank.accounts.values(), hasItems(origAccounts.toArray(new Account[0])));
     }
 
     @Test
@@ -48,8 +46,8 @@ public class BankTest {
         assertThat(loadCount, is(0));
         bank.validateAccounts();
         assertTrue("There should be no Owners loaded", bank.owners.isEmpty());
-        assertTrue("There should be no SavingsAccounts loaded", bank.savingsAccounts.isEmpty());
-        assertTrue("There should be no CheckingAccounts loaded", bank.checkingAccounts.isEmpty());
+        assertTrue("There should be no SavingsAccounts loaded", bank.accounts.isEmpty());
+        assertTrue("There should be no CheckingAccounts loaded", bank.accounts.isEmpty());
     }
 
     @Test
