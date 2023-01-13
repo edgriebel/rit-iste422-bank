@@ -7,11 +7,22 @@ import java.util.stream.Collectors;
 
 public class Bank {
     public static Logger logger = LogManager.getLogger(Bank.class);
-    protected Map<Long, Owner> owners = new TreeMap<>();
-    protected Map<Long, Account> accounts = new TreeMap<>();
+    private Map<Long, Owner> owners = new TreeMap<>();
+    private Map<Long, Account> accounts = new TreeMap<>();
+    private Register register = new Register();
+
+    public Bank() {
+        // All accounts share a single unified register so we only
+        // persist one object instead of one per account
+        Account.useSharedRegister(register);
+    }
 
     public Account getAccount(long id) {
         return accounts.get(id);
+    }
+
+    public Collection<Account> getAllAccounts() {
+        return Collections.unmodifiableCollection(accounts.values());
     }
 
     public long putAccount(Account account) throws DuplicateKeyException, MissingRecordException {
@@ -29,6 +40,10 @@ public class Bank {
         return owners.get(id);
     }
 
+    public Collection<Owner> getAllOwners() {
+        return Collections.unmodifiableCollection(owners.values());
+    }
+
     public long putOwner(Owner owner) throws DuplicateKeyException {
         if (owners.containsKey(owner.getId())) {
             throw new DuplicateKeyException("Id " + owner.getId() + " already exists:" + owner);
@@ -37,6 +52,13 @@ public class Bank {
         return owner.getId();
     }
 
+    public Collection<RegisterEntry> getAllRegisterEntries() {
+        return Collections.unmodifiableCollection(register.getEntries());
+    }
+
+    public Collection<RegisterEntry> getRegisterEntriesForAccount(long accountId) {
+        return Collections.unmodifiableCollection(register.getEntriesForAccount(accountId));
+    }
     public Collection<Statement> runMonthEnd() {
         List<Statement> statements = new ArrayList<>();
         for (Account a: accounts.values()) {
@@ -46,7 +68,7 @@ public class Bank {
         return statements;
     }
 
-    public int loadAllRecords(String ownersCsvFile, String checkingAccountCsvFile, String savingsAccountCsvFile) throws IOException, SerializationException {
+    public int loadAllRecords(String ownersCsvFile, String checkingAccountCsvFile, String savingsAccountCsvFile, String registerCsvFile) throws IOException, SerializationException {
         clearAllRecords();
         for (Owner o : Persister.readOwnersFromCsv(ownersCsvFile)) {
             owners.put(o.id(), o);
@@ -58,22 +80,32 @@ public class Bank {
         for (CheckingAccount rec : Persister.readCheckingAccountsFromCsv(checkingAccountCsvFile)) {
             accounts.put(rec.getId(), rec);
         }
+        // we need to clear the register because inserting accounts above creates entries
+        register.clear();
+        for (RegisterEntry rec : Persister.readRegisterEntriesFromCsv(registerCsvFile)) {
+            register.addRegisterEntry(rec);
+        }
         logger.info("Loaded {} Accounts", accounts.size());
-        return owners.size() + accounts.size();
+        return owners.size() + accounts.size() + register.getEntries().size();
     }
 
-    public int saveAllRecords(String ownersCsvFile, String checkingAccountCsvFile, String savingsAccountCsvFile) throws IOException, SerializationException {
+    public int saveAllRecords(String ownersCsvFile,
+                              String checkingAccountCsvFile,
+                              String savingsAccountCsvFile,
+                              String registerCsvFile) throws IOException, SerializationException {
         int ownerCount = Persister.writeRecordsToCsv(owners.values(), ownersCsvFile);
         // this splits all accounts into
         Map<Class<? extends Account>, List<Account>> splitAccounts = accounts.values().stream().collect(Collectors.groupingBy(rec -> rec.getClass()));
         int savingsCount = Persister.writeRecordsToCsv(splitAccounts.get(SavingsAccount.class), savingsAccountCsvFile);
         int checkingCount = Persister.writeRecordsToCsv(splitAccounts.get(CheckingAccount.class), checkingAccountCsvFile);
-        return ownerCount + savingsCount + checkingCount;
+        int registerCount = Persister.writeRecordsToCsv(register.getEntries(), registerCsvFile);
+        return ownerCount + savingsCount + checkingCount + registerCount;
     }
 
     public void clearAllRecords() {
         owners.clear();
         accounts.clear();
+        register.clear();
     }
 
     public void validateAccounts() {
@@ -81,7 +113,7 @@ public class Bank {
         for (Account a : accounts.values()) {
             assert owners.containsKey(a.getOwnerId()): "Account " + a + " has invalid Owner ID!";
         }
-        // check that all map keys match internal IDs
+        // check that every object's id matches the key it's stored under
         for (Map<Long, ? extends Persistable> persistableMap : List.of(owners, accounts)) {
             for (var kv : persistableMap.entrySet()) {
                 assert kv.getKey().equals(kv.getValue().getId()): "ID of key != id of value: " + kv;

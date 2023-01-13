@@ -44,6 +44,10 @@ public class BankRunner {
         for (Statement s : statements) {
             System.out.println(s);
         }
-        bank.saveAllRecords("owners.csv", "checking.csv", "savings.csv");
+        for (RegisterEntry re : bank.getAllRegisterEntries()) {
+            System.out.println(re);
+        }
+        bank.saveAllRecords("owners.csv", "checking.csv", "savings.csv", "register.csv");
+
     }
 }

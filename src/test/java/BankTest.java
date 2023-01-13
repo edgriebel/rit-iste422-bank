@@ -1,3 +1,4 @@
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,43 +12,52 @@ import static org.junit.Assert.assertTrue;
 
 public class BankTest {
 
+    /** because the Bank object forces Account to use a shared Account register
+     * we need to manually clear it so it doesn't interfere with other tests.
+     */
+    @After
+    public void resetRegister() {
+        Account.useIndividualRegisters();
+    }
+
     @Test
-    public void givenOwnersAndAccounts_whenWriteCsv_thenReadCsvIsEqual() throws SerializationException, IOException {
+    public void givenOwnersAndAccounts_whenWriteCsv_thenReadCsvIsEqual() throws SerializationException, IOException, MissingRecordException, DuplicateKeyException {
         Random r = new Random();
         Bank bank = new Bank();
         for (int i = 0; i < 1; i++) {
             long ownerId = r.nextLong();
-            bank.owners.put(ownerId, new Owner("cust" + i, ownerId, new Date(), "" + i, i + " Main St", null, null, null, null));
-            bank.accounts.put(i+100L, new SavingsAccount("acct_" + i, i+100L, i * 100, i * 0.01, ownerId));
-            bank.accounts.put(i+200L, new CheckingAccount("acct_" + i, i+200L, i * 200, i, ownerId));
+            bank.putOwner(new Owner("cust" + i, ownerId, new Date(), "" + i, i + " Main St", null, null, null, null));
+            bank.putAccount(new SavingsAccount("acct_" + i, i+100L, i * 100, i * 0.01, ownerId));
+            bank.putAccount(new CheckingAccount("acct_" + i, i+200L, i * 200, i, ownerId));
         }
         bank.validateAccounts();
         // save contents for later
-        var origOwners = bank.owners.values();
-        var origAccounts = bank.accounts.values();
+        var origOwners = bank.getAllOwners();
+        var origAccounts = bank.getAllAccounts();
+        var origRegisterEntries = bank.getAllRegisterEntries();
         String TEMP = System.getProperty("java.io.tmpdir") + File.separator;
-        int savedCount = bank.saveAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv");
-        int loadedCount = bank.loadAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv");
+        int savedCount = bank.saveAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv", TEMP + "register.csv");
+        int loadedCount = bank.loadAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv", TEMP + "register.csv");
         assertThat("Records saved should be the same as records loaded", savedCount, is(loadedCount));
         bank.validateAccounts();
-        assertThat(bank.owners.values(), hasItems(origOwners.toArray(new Owner[0])));
-        assertThat(bank.accounts.values(), hasItems(origAccounts.toArray(new Account[0])));
+        assertThat(bank.getAllOwners(), hasItems(origOwners.toArray(new Owner[0])));
+        assertThat(bank.getAllAccounts(), hasItems(origAccounts.toArray(new Account[0])));
+        assertThat(bank.getAllRegisterEntries(), hasItems(origRegisterEntries.toArray(new RegisterEntry[0])));
     }
 
     @Test
     public void givenEmptyOwnersAndAccounts_whenWriteAndReadCsv_thenMapsShouldBeEmpty() throws SerializationException, IOException {
-        Random r = new Random();
         Bank bank = new Bank();
         bank.validateAccounts();
         String TEMP = System.getProperty("java.io.tmpdir") + File.separator;
-        int savedCount = bank.saveAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv");
+        int savedCount = bank.saveAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv", TEMP + "register.csv");
         assertThat(savedCount, is(0));
-        int loadCount = bank.loadAllRecords(TEMP + "owners.csv", TEMP + "cheking.csv", TEMP + "savings.csv");
+        int loadCount = bank.loadAllRecords(TEMP + "owners.csv", TEMP + "cheking.csv", TEMP + "savings.csv", TEMP + "register.csv");
         assertThat(loadCount, is(0));
         bank.validateAccounts();
-        assertTrue("There should be no Owners loaded", bank.owners.isEmpty());
-        assertTrue("There should be no SavingsAccounts loaded", bank.accounts.isEmpty());
-        assertTrue("There should be no CheckingAccounts loaded", bank.accounts.isEmpty());
+        assertTrue("There should be no Owners loaded", bank.getAllOwners().isEmpty());
+        assertTrue("There should be no Accounts loaded", bank.getAllAccounts().isEmpty());
+        assertTrue("There should be no register entries", bank.getAllRegisterEntries().isEmpty());
     }
 
     @Test

@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CheckingAccountTestFixture {
     public static Logger logger = LogManager.getLogger(CheckingAccountTestFixture.class);
@@ -61,8 +60,8 @@ public class CheckingAccountTestFixture {
             // run month-end if desired and output register
             if (scenario.runMonthEnd) {
                 ca.monthEnd();
-                for (Map.Entry<String, Double> entry : ca.getRegisterEntries()) {
-                    logger.info("Register Entry -- {}: {}", entry.getKey(), entry.getValue());
+                for (RegisterEntry entry : ca.getRegisterEntries()) {
+                    logger.info("Register Entry {} -- {}: {}", entry.id(), entry.entryName(), entry.amount());
 
                 }
             }

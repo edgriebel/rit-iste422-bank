@@ -70,6 +70,25 @@ public class Persister {
         return recs;
     }
 
+    public static List<RegisterEntry> readRegisterEntriesFromCsv(final String csvFilename) throws IOException, SerializationException {
+        if (! Paths.get(csvFilename).toFile().exists()) {
+            logger.info("File {} doesn't exist, skipping load", csvFilename);
+            return Collections.emptyList();
+        }
+        logger.info("Loading RegisterEntries from file {}", csvFilename);
+        List<RegisterEntry> recs = new ArrayList<>();
+        List<String> recsCsv = Files.readAllLines(Paths.get(csvFilename));
+        for (String recCsv : recsCsv) {
+            if (recCsv.startsWith(RegisterEntry.COLUMNS[0])) {
+                logger.debug("Skipping header");
+                continue;
+            }
+            recs.add(RegisterEntry.fromCSV(recCsv));
+        }
+        logger.info("Loaded {} register entries from file {}", recs.size(), csvFilename);
+        return recs;
+    }
+
     public static <T extends Persistable>int writeRecordsToCsv(final Collection<T> records, final String csvFilename) throws IOException, SerializationException {
         List<String> data = new ArrayList<>();
         boolean header = true;

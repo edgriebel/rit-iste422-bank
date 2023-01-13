@@ -1,6 +1,8 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Date;
+
 
 public class CheckingAccount extends Account {
     public static Logger logger = LogManager.getLogger(CheckingAccount.class.getName());
@@ -44,7 +46,7 @@ public class CheckingAccount extends Account {
             withdraw(getBelowMinimumFee(), "MINIMUM BALANCE CHARGE");
         }
         logger.info("Check # at end of month: " + checkNumber);
-        register.add("END CHECK", (double)checkNumber);
+        register.add(getId(), "END CHECK", (double)checkNumber, new Date());
     }
 
     public String toString() {

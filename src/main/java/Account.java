@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class Account implements Persistable {
     public static Logger logger = LogManager.getLogger(Account.class.getName());
     public static Logger timeLogger = LogManager.getLogger("timer." + Account.class.getName());
+    protected static Register SharedRegister = null;
 
     private Long id;
     private double balance;
@@ -18,9 +16,24 @@ public abstract class Account implements Persistable {
     protected double minimumBalance;
     protected double belowMinimumFee;
 
+    // This is kind of a hack to get around having to add Register
+    // to every call to new Account()
+    public static void useSharedRegister(Register register) {
+        logger.info("Using new shared register");
+        SharedRegister = register;
+    }
+
+    public static void useIndividualRegisters() {
+        if (SharedRegister != null) {
+            logger.info("Removing shared register");
+            SharedRegister = null;
+        }
+    }
+
     public Account() {
     	this("", -1, 0.0, -1);
     }
+
 
     public Account(String name, long id, double balance, long ownerId) {
         timeLogger.info("start _init");
@@ -28,8 +41,8 @@ public abstract class Account implements Persistable {
         this.name = name;
         this.balance = balance;
         this.ownerId = ownerId;
-        register = new Register();
-        register.add("OPEN", balance);
+        this.register = (SharedRegister != null) ? SharedRegister : new Register();
+        register.add(id, "OPEN", balance, new Date());
         timeLogger.info("end _init");
     }
 
@@ -43,7 +56,7 @@ public abstract class Account implements Persistable {
         logger.debug(name + " Balance before deposit: " + balance);
         balance += amount;
         logger.debug(name + " Balance after deposit: " + balance);
-        register.add(registerEntry, amount);
+        register.add(id, registerEntry, amount, new Date());
         timeLogger.info("end deposit");
     }
 
@@ -52,11 +65,14 @@ public abstract class Account implements Persistable {
     }
 
     public void withdraw(double amount, String registerEntry) {
+        withdraw(amount, registerEntry, new Date());
+    }
+    public void withdraw(double amount, String registerEntry, Date txnDate) {
         timeLogger.info("start withdraw");
     	logger.debug(name + " Before w/d "+ getBalance());
         balance = balance - amount;
         logger.debug(name + " After w/d " + getBalance());
-        register.add(registerEntry, -1d * amount);
+        register.add(id, registerEntry, -1d * amount, txnDate);
         timeLogger.info("end withdraw");
     }
 
@@ -68,7 +84,7 @@ public abstract class Account implements Persistable {
         return register;
     }
 
-    public List<Map.Entry<String, Double>> getRegisterEntries() {
+    public List<RegisterEntry> getRegisterEntries() {
         return register.getEntries();
     }
 
@@ -96,9 +112,9 @@ public abstract class Account implements Persistable {
         timeLogger.info("start generateStatement");
 
         List<String> rtn = new ArrayList<>();
-        List<Map.Entry<String, Double>> registerEntries = register.getEntries();
-        for (Map.Entry<String, Double> entry : registerEntries) {
-            String val = String.format("%-8s: %,.2f", entry.getKey(), entry.getValue());
+        List<RegisterEntry> registerEntries = register.getEntries();
+        for (RegisterEntry entry : registerEntries) {
+            String val = String.format("%-8s: %,.2f on %s", entry.entryName(), entry.amount(), entry.date().toString());
             rtn.add(val);
         }
         timeLogger.info("end generateStatement");

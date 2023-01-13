@@ -32,11 +32,11 @@ public class AccountTest {
 	@Test
 	public void givenAccountWithZeroBalance_whenDepositTen_thenRegisterShowsTen() throws Exception {
 		account.deposit(10);
-		List<Entry<String, Double>> register = account.getRegisterEntries();
+		List<RegisterEntry> register = account.getRegisterEntries();
 		assertThat("Register should have 2 entries, OPEN and DEP: " + register, register.size(), is(2));
-		Entry<String, Double> entry = register.get(1); // 2nd element
-		assertThat(entry.getKey(), is("DEP"));
-		assertThat(entry.getValue(), is(10.0));
+		RegisterEntry entry = register.get(1); // 2nd element
+		assertThat(entry.entryName(), is("DEP"));
+		assertThat(entry.amount(), is(10.0));
 	}
 
 }

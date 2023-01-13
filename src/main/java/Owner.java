@@ -14,13 +14,22 @@ record Owner(String name, long id, Date dob, String ssn, String address, String 
     public static Owner fromCSV(final String csv) throws SerializationException {
         final String[] fields = csv.split(",");
         final String version = fields[fields.length - 1];
-        if (!version.equals("v1")) {
+        if (!version.trim().equals("v1")) {
             throw new SerializationException("Verison incorrect or missing, expected v1 but was " + version);
         }
         if (fields.length != COLUMNS.length) {
             throw new SerializationException(String.format("not enough fields, should be %d but was %d: %s", COLUMNS.length, fields.length, csv));
         }
-        return new Owner(fields[1].trim(), Long.parseLong(fields[0]), new Date(Long.parseLong(fields[2])), fields[3].trim(), fields[4].trim(), fields[5].trim(), fields[6].trim(), fields[7].trim(), fields[8].trim());
+        return new Owner(
+                fields[1].trim(),
+                Long.parseLong(fields[0].trim()),
+                new Date(Long.parseLong(fields[2].trim())),
+                fields[3].trim(),
+                fields[4].trim(),
+                fields[5].trim(),
+                fields[6].trim(),
+                fields[7].trim(),
+                fields[8].trim());
     }
 
     public String[] columns() {
