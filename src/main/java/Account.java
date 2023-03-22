@@ -35,7 +35,7 @@ public abstract class Account {
 
     public void deposit(double amount, String registerEntry) {
         timeLogger.info("start deposit");
-        logger.info(name + " Depositing " + amount);
+        logger.info("account_name={} operation={} amount={}", name, "deposit", amount);
         logger.debug(name + " Balance before deposit: " + balance);
         balance += amount;
         logger.debug(name + " Balance after deposit: " + balance);
@@ -49,6 +49,7 @@ public abstract class Account {
 
     public void withdraw(double amount, String registerEntry) {
         timeLogger.info("start withdraw");
+        logger.info("account_name={} operation={} amount={}", name, "withdraw", amount); //name + " Depositing " + amount);
     	logger.debug(name + " Before w/d "+ getBalance());
         balance = balance - amount;
         logger.debug(name + " After w/d " + getBalance());
@@ -90,6 +91,7 @@ public abstract class Account {
 
     public List<String> generateStatement() {
         timeLogger.info("start generateStatement");
+        logger.info("account_name={} operation={} amount={}", name, "month_end", "");
         monthEnd();
 
         List<String> rtn = new ArrayList<>();
