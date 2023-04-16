@@ -18,7 +18,6 @@ public class AccountTest {
 		account = new Account() { 
 			@Override 
 			public void monthEnd() { 
-				
 			} 
 		};
 	}
