@@ -6,4 +6,4 @@ bin
 .settings
 *.log
 .idea
-./*.csv
+*.csv
