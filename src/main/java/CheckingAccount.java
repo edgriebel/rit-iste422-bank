@@ -33,6 +33,7 @@ public class CheckingAccount extends Account {
      * @throws Exception if negative balance
      */
     public long writeCheck(String name, double amount) throws Exception {
+        logger.info(name + " Writing check for " + name + " amount " + amount);
     	logger.debug("Balance before check:" + getBalance() + " check amount: " + amount);
         withdraw(amount, String.format("Check %d", checkNumber));
     	logger.debug("Balance after check:" + getBalance());
@@ -45,7 +46,7 @@ public class CheckingAccount extends Account {
         if (getBalance() < getMinimumBalance()) {
             withdraw(getBelowMinimumFee(), "MINIMUM BALANCE CHARGE");
         }
-        logger.info("Check # at end of month: " + checkNumber);
+        logger.info(name + " Check # at end of month: " + checkNumber);
         register.add(getId(), "END CHECK", (double)checkNumber, new Date());
     }
 

@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-/* TODO: Add these lines to build.gradle:
+/* TODO: Add these lines to build.gradle to add the runSavingsFixture target:
 task runSavingsFixture(type: JavaExec) {
     group = "Execution"
     description = "Run SavingsAccountTestFixture class"
@@ -28,7 +28,7 @@ task runSavingsFixture(type: JavaExec) {
 
 public class SavingsAccountTestFixture {
     public static Logger logger = LogManager.getLogger(SavingsAccountTestFixture.class);
-    // TODO We should probably read the file from classpath instead of hardcoding the pathname
+    // Note that we could also load the file from the classpath instead of hardcoding the pathname
     static final String TEST_FILE = "src/test/resources/SavingsAccountTest.csv";
 
     record TestScenario(double initBalance,
@@ -43,10 +43,8 @@ public class SavingsAccountTestFixture {
 
     @Test
     public void runTestScenarios() throws Exception {
-        if (testScenarios == null) {
-            logger.error("testScenarios object must be populated, is this running from main()? Skipping test");
-            return;
-        }
+        assertThat("testScenarios object must be populated, is this running from main()?",
+                testScenarios, notNullValue());
 
         // iterate over all test scenarios
         for (int testNum = 0; testNum < testScenarios.size(); testNum++) {
@@ -105,14 +103,14 @@ public class SavingsAccountTestFixture {
         double initialBalance = Double.parseDouble(scenarioValues[0]);
         // TODO: parse the rest of your fields
         List<Double> wds = parseListOfAmounts(scenarioValues[2]);
-        // TODO: Replace dummy values with your field values to populate TestScenario object
+        // TODO: Replace these dummy values with _your_ field values to populate TestScenario object
         TestScenario scenario = new TestScenario(
                 initialBalance, 0.0, null, null, 0, 0.0
         );
         return scenario;
     }
 
-    private static List<TestScenario> parseScenarioStrings(String ... scenarioStrings) {
+    private static List<TestScenario> parseScenarioStrings(List<String> scenarioStrings) {
         logger.info("Parsing test scenarios...");
         List<TestScenario> scenarios = new ArrayList<>();
         for (String scenarioAsString : scenarioStrings) {
@@ -128,7 +126,7 @@ public class SavingsAccountTestFixture {
     public static void main(String [] args) throws IOException {
         System.out.println("START TESTING");
 
-        // TODO: determine if we're running tests from file or cmdline
+        // TODO: Instead of hardcoded "false", determine if tests are coming from file or cmdline
         // Note: testsFromFile is just a suggestion, you don't have to use testsFromFile or even an if/then statement!
         boolean testsFromFile = false;
 
@@ -140,7 +138,7 @@ public class SavingsAccountTestFixture {
             // TODO: get filename from cmdline and use instead of TEST_FILE constant
             List<String> scenarioStringsFromFile = Files.readAllLines(Paths.get(TEST_FILE));
             // Note: toArray converts from a List to an array
-            testScenarios = parseScenarioStrings(scenarioStringsFromFile.toArray(String[]::new));
+            testScenarios = parseScenarioStrings(scenarioStringsFromFile);
             runJunitTests();
         }
         else {
@@ -148,7 +146,7 @@ public class SavingsAccountTestFixture {
             // for example "-t '10, 20|20, , 40|10, 0'"
             // Note the single-quotes above ^^^ because of the embedded spaces and the pipe symbol
             System.out.println("Command-line arguments passed in: " + java.util.Arrays.asList(args));
-            // TODO: "parse" scenario into a suitable string
+            // TODO: write the code to "parse" scenario into a suitable string
             // TODO: get TestScenario object from above string and store to testScenarios static var
             runJunitTests();
         }

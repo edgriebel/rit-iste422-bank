@@ -112,7 +112,7 @@ public class CheckingAccountTestFixture {
         return scenario;
     }
 
-    private static List<TestScenario> parseScenarioStrings(String ... scenarioStrings) {
+    private static List<TestScenario> parseScenarioStrings(List<String> scenarioStrings) {
         logger.info("Running test scenarios...");
         List<TestScenario> scenarios = new ArrayList<>();
         for (String scenarioAsString : scenarioStrings) {
@@ -144,12 +144,12 @@ public class CheckingAccountTestFixture {
 
         // Same scenarios as above plus one more to verify it's running these string scenarios
         System.out.println("\n\n****** FROM STRINGS ******\n");
-        String [] scenarioStrings = {
+        List<String> scenarioStrings = List.of(
                 "0, , , 10|20, 30",
                 "100, , , , 100",
                 "100, 10, , , 90",
                 "100, 10|20, , 10, 80"
-        };
+        );
         List<TestScenario> parsedScenarios = parseScenarioStrings(scenarioStrings);
         testScenarios = parsedScenarios;
         runJunitTests();
@@ -159,7 +159,7 @@ public class CheckingAccountTestFixture {
         System.out.println("\n\n****** FROM FILE ******\n");
         // We could get the filename from the cmdline, e.g. "-f CheckingAccountScenarios.csv"
         List<String> scenarioStringsFromFile = Files.readAllLines(Paths.get(TEST_FILE));
-        testScenarios = parseScenarioStrings(scenarioStringsFromFile.toArray(String[]::new));
+        testScenarios = parseScenarioStrings(scenarioStringsFromFile);
         runJunitTests();
 
         // ...or, we could also specify a single scenario on the command line,
