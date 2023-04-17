@@ -1,4 +1,5 @@
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,12 +13,19 @@ import static org.junit.Assert.assertTrue;
 
 public class BankTest {
 
+    @Before
+    public void loadAndSaveToTemporaryDir() throws IOException {
+        Persister.loadPersistedFileNameAndDir();
+        Persister.setPersistedFileDir(System.getProperty("java.io.tmpdir"));
+    }
+
     /** because the Bank object forces Account to use a shared Account register
      * we need to manually clear it so it doesn't interfere with other tests.
      */
     @After
-    public void resetRegister() {
+    public void resetState() {
         Account.useIndividualRegisters();
+        Persister.resetPersistedFileNameAndDir();
     }
 
     @Test
@@ -35,9 +43,8 @@ public class BankTest {
         var origOwners = bank.getAllOwners();
         var origAccounts = bank.getAllAccounts();
         var origRegisterEntries = bank.getAllRegisterEntries();
-        String TEMP = System.getProperty("java.io.tmpdir") + File.separator;
-        int savedCount = bank.saveAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv", TEMP + "register.csv");
-        int loadedCount = bank.loadAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv", TEMP + "register.csv");
+        int savedCount = bank.saveAllRecords();
+        int loadedCount = bank.loadAllRecords();
         assertThat("Records saved should be the same as records loaded", savedCount, is(loadedCount));
         bank.validateAccounts();
         assertThat(bank.getAllOwners(), hasItems(origOwners.toArray(new Owner[0])));
@@ -49,10 +56,9 @@ public class BankTest {
     public void givenEmptyOwnersAndAccounts_whenWriteAndReadCsv_thenMapsShouldBeEmpty() throws SerializationException, IOException {
         Bank bank = new Bank();
         bank.validateAccounts();
-        String TEMP = System.getProperty("java.io.tmpdir") + File.separator;
-        int savedCount = bank.saveAllRecords(TEMP + "owners.csv", TEMP + "checking.csv", TEMP + "savings.csv", TEMP + "register.csv");
+        int savedCount = bank.saveAllRecords();
         assertThat(savedCount, is(0));
-        int loadCount = bank.loadAllRecords(TEMP + "owners.csv", TEMP + "cheking.csv", TEMP + "savings.csv", TEMP + "register.csv");
+        int loadCount = bank.loadAllRecords();
         assertThat(loadCount, is(0));
         bank.validateAccounts();
         assertTrue("There should be no Owners loaded", bank.getAllOwners().isEmpty());

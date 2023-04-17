@@ -3,7 +3,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.*;
@@ -16,14 +19,10 @@ import static org.hamcrest.CoreMatchers.*;
 
 public class BankTestInteg {
 
+
     /**
      * Load some records, do some calculations and transactions
      */
-
-    private final String OWNER_FILE = "src/test/resources/owners_integ.csv";
-    private final String SAVINGS_FILE = "src/test/resources/savings_integ.csv";
-    private final String CHECKING_FILE = "src/test/resources/checking_integ.csv";
-    private final String REGISTER_FILE = "src/test/resources/register_integ.csv";
 
     Bank bank;
 
@@ -44,24 +43,28 @@ public class BankTestInteg {
      * - Validating the initial state of the files
      * - Correct balances exist after we perform some transactions
      */
+
+
     @Before
     public void loadData() throws SerializationException, IOException {
         bank = new Bank();
-        bank.loadAllRecords(OWNER_FILE, CHECKING_FILE, SAVINGS_FILE, REGISTER_FILE);
+        Persister.setPersisterPropertiesFile("persister_integ.properties");
+        Persister.loadPersistedFileNameAndDir();
+        bank.loadAllRecords();
         bank.validateAccounts();
         for (long id : accountIds) {
             assertNotNull("Account with id " + id + " not found!", bank.getAccount(id));
         }
         // store account IDs with a link to owner so we don't have to enumerate them in later tests
-
     }
 
     /** because the Bank object forces Account to use a shared Account register
      * we need to manually clear it so it doesn't interfere with other tests.
      */
     @After
-    public void resetRegister() {
+    public void resetState() {
         Account.useIndividualRegisters();
+        Persister.resetPersistedFileNameAndDir();
     }
 
 

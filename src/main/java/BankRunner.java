@@ -57,7 +57,7 @@ public class BankRunner {
             for (RegisterEntry re : bank.getAllRegisterEntries()) {
                 System.out.println(re);
             }
-            bank.saveAllRecords("owners.csv", "checking.csv", "savings.csv", "register.csv");
+            bank.saveAllRecords();
             count--;
             if (count != 0) {
                 System.out.println("Iterations left: " + count);

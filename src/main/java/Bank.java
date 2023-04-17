@@ -68,37 +68,35 @@ public class Bank {
         return statements;
     }
 
-    public int loadAllRecords(String ownersCsvFile, String checkingAccountCsvFile, String savingsAccountCsvFile, String registerCsvFile) throws IOException, SerializationException {
+    public int loadAllRecords() throws IOException, SerializationException {
         clearAllRecords();
-        for (Owner o : Persister.readOwnersFromCsv(ownersCsvFile)) {
+        for (Owner o : Persister.readOwnersFromCsv()) {
             owners.put(o.id(), o);
         }
         logger.info("Loaded {} Owners", owners.size());
-        for (SavingsAccount rec : Persister.readSavingsAccountsFromCsv(savingsAccountCsvFile)) {
+        for (SavingsAccount rec : Persister.readSavingsAccountsFromCsv()) {
             accounts.put(rec.getId(), rec);
         }
-        for (CheckingAccount rec : Persister.readCheckingAccountsFromCsv(checkingAccountCsvFile)) {
+        for (CheckingAccount rec : Persister.readCheckingAccountsFromCsv()) {
             accounts.put(rec.getId(), rec);
         }
         // we need to clear the register because inserting accounts above creates entries
         register.clear();
-        for (RegisterEntry rec : Persister.readRegisterEntriesFromCsv(registerCsvFile)) {
+        for (RegisterEntry rec : Persister.readRegisterEntriesFromCsv()) {
             register.addRegisterEntry(rec);
         }
         logger.info("Loaded {} Accounts", accounts.size());
         return owners.size() + accounts.size() + register.getEntries().size();
     }
 
-    public int saveAllRecords(String ownersCsvFile,
-                              String checkingAccountCsvFile,
-                              String savingsAccountCsvFile,
-                              String registerCsvFile) throws IOException, SerializationException {
-        int ownerCount = Persister.writeRecordsToCsv(owners.values(), ownersCsvFile);
+    public int saveAllRecords() throws IOException, SerializationException {
+        Persister.loadPersistedFileNameAndDir();
+        int ownerCount = Persister.writeRecordsToCsv(owners.values(), "owners");
         // this splits all accounts into
         Map<Class<? extends Account>, List<Account>> splitAccounts = accounts.values().stream().collect(Collectors.groupingBy(rec -> rec.getClass()));
-        int savingsCount = Persister.writeRecordsToCsv(splitAccounts.get(SavingsAccount.class), savingsAccountCsvFile);
-        int checkingCount = Persister.writeRecordsToCsv(splitAccounts.get(CheckingAccount.class), checkingAccountCsvFile);
-        int registerCount = Persister.writeRecordsToCsv(register.getEntries(), registerCsvFile);
+        int savingsCount = Persister.writeRecordsToCsv(splitAccounts.get(SavingsAccount.class), "savings");
+        int checkingCount = Persister.writeRecordsToCsv(splitAccounts.get(CheckingAccount.class),"checking");
+        int registerCount = Persister.writeRecordsToCsv(register.getEntries(),"register");
         return ownerCount + savingsCount + checkingCount + registerCount;
     }
 
