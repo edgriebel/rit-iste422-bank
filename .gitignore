@@ -6,4 +6,5 @@ bin
 .settings
 *.log
 .idea
-*.csv
+/*.csv
+src/test/resources/*_prod.csv
