@@ -8,3 +8,5 @@ bin
 .idea
 /*.csv
 src/test/resources/*_prod.csv
+*.swp
+*~
