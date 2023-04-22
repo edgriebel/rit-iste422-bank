@@ -17,7 +17,7 @@ import java.util.List;
 
 public class CheckingAccountTestFixture {
     public static Logger logger = LogManager.getLogger(CheckingAccountTestFixture.class);
-    // TODO We should probably read the file from classpath instead of hardcoding the pathname?
+    // We could read the file from classpath instead of hardcoding the pathname too
     static final String TEST_FILE = "src/test/resources/CheckingAccountTest.csv";
 
     record TestScenario(double initBalance,
@@ -33,7 +33,16 @@ public class CheckingAccountTestFixture {
     @Test
     public void runTestScenarios() throws Exception {
         if (testScenarios == null) {
-            logger.error("testScenarios object must be populated, is this running from main()? Skipping test");
+            System.err.println("\n\n");
+            System.err.println("************************************");
+            System.err.println("************************************");
+            System.err.println();
+            System.err.println("Note: NOT running any Test Scenarios");
+            System.err.println("Run main() method to run scenarios!!");
+            System.err.println();
+            System.err.println("************************************");
+            System.err.println("************************************");
+            System.err.println("\n\n");
             return;
         }
 

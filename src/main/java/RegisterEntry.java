@@ -1,6 +1,6 @@
 import java.util.Date;
 
-record RegisterEntry(long id, long accountId, String entryName, double amount, Date date) implements Persistable {
+public record RegisterEntry(long id, long accountId, String entryName, double amount, Date date) implements Persistable {
     public static String [] COLUMNS = { "id", "accountId", "entryName", "amount", "date", "version" };
     @Override
     public String toCSV() throws SerializationException {

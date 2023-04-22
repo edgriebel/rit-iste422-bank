@@ -3,7 +3,7 @@ import java.util.Objects;
 import java.util.Random;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 
-record Owner(String name, long id, Date dob, String ssn, String address, String address2, String city, String state,
+public record Owner(String name, long id, Date dob, String ssn, String address, String address2, String city, String state,
              String zip) implements Persistable {
     public static final String[] COLUMNS = {"id", "name", "dob", "ssn", "address", "address2", "city", "state", "zip", "version"};
 
