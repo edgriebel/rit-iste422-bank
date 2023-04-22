@@ -90,7 +90,6 @@ public class Bank {
     }
 
     public int saveAllRecords() throws IOException, SerializationException {
-        Persister.loadPersistedFileNameAndDir();
         int ownerCount = Persister.writeRecordsToCsv(owners.values(), "owners");
         // this splits all accounts into
         Map<Class<? extends Account>, List<Account>> splitAccounts = accounts.values().stream().collect(Collectors.groupingBy(rec -> rec.getClass()));

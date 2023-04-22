@@ -1,23 +1,16 @@
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runners.Parameterized;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.*;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
-public class BankTestInteg {
+public class BankIntegTest {
 
 
     /**
@@ -49,7 +42,6 @@ public class BankTestInteg {
     public void loadData() throws SerializationException, IOException {
         bank = new Bank();
         Persister.setPersisterPropertiesFile("persister_integ.properties");
-        Persister.loadPersistedFileNameAndDir();
         bank.loadAllRecords();
         bank.validateAccounts();
         for (long id : accountIds) {
