@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CheckingAccountTestFixture {
@@ -57,7 +58,7 @@ public class CheckingAccountTestFixture {
 
             // now process checks, withdrawals, deposits
             for (double checkAmount : scenario.checks) {
-                ca.writeCheck("CHECK", checkAmount);
+                ca.writeCheck("CHECK", checkAmount, new Date());
             }
             for (double withdrawalAmount : scenario.withdrawals) {
                 ca.withdraw(withdrawalAmount);
