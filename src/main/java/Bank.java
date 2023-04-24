@@ -110,6 +110,7 @@ public class Bank {
         for (Account a : accounts.values()) {
             assert owners.containsKey(a.getOwnerId()): "Account " + a + " has invalid Owner ID!";
         }
+
         // check that every object's id matches the key it's stored under
         for (Map<Long, ? extends Persistable> persistableMap : List.of(owners, accounts)) {
             for (var kv : persistableMap.entrySet()) {
