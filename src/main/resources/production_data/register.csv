@@ -1,3 +1,4 @@
+id,accountId,entryName,amount,date,version
    936,    56108,     OPEN,    551.51, 1444792133383, v1
    937,    15897,     OPEN,   2272.99, 1453435733931, v1
    938,    56108,  deposit,    665.29, 1457842133709, v1
