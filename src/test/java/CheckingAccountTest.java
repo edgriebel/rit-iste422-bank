@@ -3,6 +3,8 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 public class CheckingAccountTest {
@@ -11,13 +13,13 @@ public class CheckingAccountTest {
 	@Before
 	public void setup() {
 		System.out.println("Creating a CheckingAccount");
-        acct = new CheckingAccount("test", 100, null);
+        acct = new CheckingAccount("test", -1, 100, 0, -1);
         assertThat(acct, notNullValue());
 	}
 	
     @Test
     public void givenCheckingAccountBalance100_whenWrite100Check_thenBalanceIsZero() throws Exception {
-        acct.writeCheck("Target", 100);
+        acct.writeCheck("Target", 100, new Date());
         assertThat("Balance not zero!", acct.getBalance(), is(0.0));
     }
     

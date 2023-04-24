@@ -30,6 +30,11 @@ task runCheckingFixture(type: JavaExec) {
     main = "CheckingAccountTestFixture"
 }
 
+task obfuscator(type: JavaExec) {
+    main = 'Obfuscator'
+        classpath = sourceSets.test.runtimeClasspath
+}
+
 repositories {
     mavenCentral()
 }

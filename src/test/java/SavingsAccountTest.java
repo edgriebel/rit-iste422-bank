@@ -17,7 +17,7 @@ public class SavingsAccountTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void givenSavingsAccount_whenNegativeInterestRate_thenExceptionIsThrown() {
 		// Interest rate should never be negative so let's see if an exception is thrown
-		SavingsAccount s = new SavingsAccount("name", 0, -1, null);
+		SavingsAccount s = new SavingsAccount("name", -1, 0, -1, -1);
 		// we should never get here!
 		System.out.println(s);
 	}

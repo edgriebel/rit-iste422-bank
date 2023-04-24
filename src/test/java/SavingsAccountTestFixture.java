@@ -43,8 +43,19 @@ public class SavingsAccountTestFixture {
 
     @Test
     public void runTestScenarios() throws Exception {
-        assertThat("testScenarios object must be populated, is this running from main()?",
-                testScenarios, notNullValue());
+        if (testScenarios == null) {
+            System.err.println("\n\n");
+            System.err.println("************************************");
+            System.err.println("************************************");
+            System.err.println();
+            System.err.println("Note: NOT running any Test Scenarios");
+            System.err.println("Run main() method to run scenarios!!");
+            System.err.println();
+            System.err.println("************************************");
+            System.err.println("************************************");
+            System.err.println("\n\n");
+            return;
+        }
 
         // iterate over all test scenarios
         for (int testNum = 0; testNum < testScenarios.size(); testNum++) {

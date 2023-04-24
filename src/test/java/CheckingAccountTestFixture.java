@@ -13,12 +13,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class CheckingAccountTestFixture {
     public static Logger logger = LogManager.getLogger(CheckingAccountTestFixture.class);
-    // TODO We should probably read the file from classpath instead of hardcoding the pathname
+    // We could read the file from classpath instead of hardcoding the pathname too
     static final String TEST_FILE = "src/test/resources/CheckingAccountTest.csv";
 
     record TestScenario(double initBalance,
@@ -33,8 +33,19 @@ public class CheckingAccountTestFixture {
 
     @Test
     public void runTestScenarios() throws Exception {
-        assertThat("testScenarios object must be populated, is this running from main()?",
-                testScenarios, notNullValue());
+        if (testScenarios == null) {
+            System.err.println("\n\n");
+            System.err.println("************************************");
+            System.err.println("************************************");
+            System.err.println();
+            System.err.println("Note: NOT running any Test Scenarios");
+            System.err.println("Run main() method to run scenarios!!");
+            System.err.println();
+            System.err.println("************************************");
+            System.err.println("************************************");
+            System.err.println("\n\n");
+            return;
+        }
 
         // iterate over all test scenarios
         for (int testNum = 0; testNum < testScenarios.size(); testNum++) {
@@ -43,11 +54,11 @@ public class CheckingAccountTestFixture {
 
             // set up account with specified starting balance
             CheckingAccount ca = new CheckingAccount(
-                    "test "+testNum, scenario.initBalance, new Owner("TEST_"+testNum));
+                    "test "+testNum, -1, scenario.initBalance, 0, -1);
 
             // now process checks, withdrawals, deposits
             for (double checkAmount : scenario.checks) {
-                ca.writeCheck("CHECK", checkAmount);
+                ca.writeCheck("CHECK", checkAmount, new Date());
             }
             for (double withdrawalAmount : scenario.withdrawals) {
                 ca.withdraw(withdrawalAmount);
@@ -59,8 +70,8 @@ public class CheckingAccountTestFixture {
             // run month-end if desired and output register
             if (scenario.runMonthEnd) {
                 ca.monthEnd();
-                for (Map.Entry<String, Double> entry : ca.getRegisterEntries()) {
-                    logger.info("Register Entry -- {}: {}", entry.getKey(), entry.getValue());
+                for (RegisterEntry entry : ca.getRegisterEntries()) {
+                    logger.info("Register Entry {} -- {}: {}", entry.id(), entry.entryName(), entry.amount());
 
                 }
             }

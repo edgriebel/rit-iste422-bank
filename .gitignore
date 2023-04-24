@@ -6,3 +6,7 @@ bin
 .settings
 *.log
 .idea
+/*.csv
+src/test/resources/*_prod.csv
+*.swp
+*~
