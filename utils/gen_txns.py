@@ -85,6 +85,7 @@ def save_txns(txns: Sequence[Any]) -> Sequence[str]:
     rec_id = random.randint(1,1000)
     recs = []
     with open(PATH+'register.csv', 'w') as rf:
+        rf.write('id,accountId,entryName,amount,date,version\n')
         for t in txns:
             rec=f'{rec_id:-6}, {t[0]:-8}, {t[1]:>8}, {t[2]:-9.2f}, {t[3]}, v1'
             recs.append(rec)
