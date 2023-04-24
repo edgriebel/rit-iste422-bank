@@ -21,7 +21,14 @@ public class Obfuscator {
 
     public BankRecords obfuscate(BankRecords rawObjects) {
         // TODO: Obfuscate and return the records! Fill these in with your own
-        Collection<Owner> obfuscatedOwners = rawObjects.owners();
+        // Example: mask SSN
+        List<Owner> newOwners = new ArrayList<>();
+        for (Owner o : rawObjects.owners()) {
+            String new_ssn = "***-**-" + o.ssn().substring(7);
+            // other changes...
+            newOwners.add(new Owner(o.name(), o.id(), o.dob(), new_ssn, o.address(), o.address2(), o.city(), o.state(), o.zip()));
+        }
+        Collection<Owner> obfuscatedOwners = newOwners;
         Collection<Account> obfuscatedAccounts = rawObjects.accounts();
         Collection<RegisterEntry> obfuscatedRegisterEntries = rawObjects.registerEntries();
 

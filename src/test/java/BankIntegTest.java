@@ -101,7 +101,7 @@ public class BankIntegTest {
         }
 
     }
-    
+
     @Test
     public void verifyRegisterEntriesSumToBalance() throws Exception{
         for (long acctId : accountIds) {
