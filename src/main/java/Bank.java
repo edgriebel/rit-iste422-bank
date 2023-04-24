@@ -108,7 +108,7 @@ public class Bank {
     public void validateAccounts() {
         // Check that OwnerId's are valid
         for (Account a : accounts.values()) {
-            assert owners.containsKey(a.getOwnerId()): "Account " + a + " has invalid Owner ID!";
+            assert owners.containsKey(a.getOwnerId()): "Account " + a + " has an unknown Owner ID!";
         }
 
         // check that every object's id matches the key it's stored under

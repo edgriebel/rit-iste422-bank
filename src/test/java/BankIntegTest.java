@@ -53,11 +53,6 @@ public class BankIntegTest {
         Persister.setPersisterPropertiesFile("persister_integ.properties");
         bank = new Bank();
         bank.loadAllRecords();
-        bank.validateAccounts();
-        for (long id : accountIds) {
-            assertNotNull("Account with id " + id + " not found!", bank.getAccount(id));
-        }
-        // store account IDs with a link to owner so we don't have to enumerate them in later tests
     }
 
     /** because the Bank object forces Account to use a shared Account register
@@ -85,7 +80,30 @@ public class BankIntegTest {
     }
 
     @Test
-    public void verifyRegisterEntriesSum() throws Exception{
+    public void verifyAccounts() throws Exception {
+        // Exception is thrown if there are mismatches between primary and foreign keys
+        bank.validateAccounts();
+    }
+
+    @Test
+    public void verifyAccountIdsLoaded() throws Exception {
+        for (long id : accountIds) {
+            assertNotNull("Account in accounts csv file with id " + id + " not found in bank", bank.getAccount(id));
+        }
+    }
+
+    @Test
+    public void verifyAllOwnersLoaded() throws Exception {
+        Persister.setPersisterPropertiesFile("persister_integ.properties");
+
+        for (Owner o : Persister.readOwnersFromCsv()) {
+            assertNotNull("Owner " + o.getId() + " not found in bank", bank.getOwner(o.getId()));
+        }
+
+    }
+    
+    @Test
+    public void verifyRegisterEntriesSumToBalance() throws Exception{
         for (long acctId : accountIds) {
             Collection<RegisterEntry> register = bank.getRegisterEntriesForAccount(acctId);
             double sum = 0;
