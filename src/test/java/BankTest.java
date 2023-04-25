@@ -13,12 +13,10 @@ import static org.junit.Assert.assertTrue;
 
 public class BankTest {
 
-    // TODO: add override params to Persister ctor
-//    @Before
-//    public void loadAndSaveToTemporaryDir() throws IOException {
-//        Persister.loadPersistedFileNameAndDir();
-//        Persister.setPersistedFileDir(System.getProperty("java.io.tmpdir"));
-//    }
+    @Before
+    public void loadAndSaveToTemporaryDir() throws IOException {
+        Persister.setPersisterPropertiesFile("persister.properties");
+    }
 
     /** because the Bank object forces Account to use a shared Account register
      * we need to manually clear it so it doesn't interfere with other tests.
