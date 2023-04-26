@@ -1,6 +1,9 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class SavingsAccount extends Account {
     public static Logger logger = LogManager.getLogger(SavingsAccount.class);
 
@@ -47,7 +50,7 @@ public class SavingsAccount extends Account {
     }
 
     public static SavingsAccount fromCSV(String csv) throws SerializationException {
-        final String [] fields = csv.split(",");
+        final String [] fields = csv.split(DELIMITER);
         final String version = fields[fields.length-1].trim();
         if (! version.equals("v1")) {
             throw new SerializationException("Verison incorrect or missing, expected v1 but was " + version);
@@ -79,12 +82,15 @@ public class SavingsAccount extends Account {
     @Override
     public String toCSV() {
         // Fields in object: String name, long id, double balance, double interestRate, long ownerId
-        return String.format("%d, %s, %f, %f, %d, v1",
-                getId(),
-                name,
-                getBalance(),
-                interestRate,
-                getOwnerId()
-        );
+        List<String> values = List.of(                getId(),
+                        name,
+                        getBalance(),
+                        interestRate,
+                        getOwnerId(),
+                        "v1"
+                ).stream()
+                .map(Object::toString)
+                .collect(Collectors.toList());
+        return String.join(DELIMITER+" ", values);
     }
 }

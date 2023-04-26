@@ -18,6 +18,7 @@ public class Persister {
 
     private static String persistedFileDir;
     private static String persistedFilePrefix;
+
     private static String persistedFileSuffix;
 
     public static String getFilename(String fileType) {
@@ -177,5 +178,9 @@ public class Persister {
 
     public static String getPersistedFileSuffix() {
         return persistedFileSuffix;
+    }
+
+    public static void setPersistedFileSuffix(String persistedFileSuffix) {
+        Persister.persistedFileSuffix = persistedFileSuffix;
     }
 }
