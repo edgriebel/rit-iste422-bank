@@ -85,6 +85,8 @@ public class Obfuscator {
         obfuscator.updateIntegProperties();
         Persister.resetPersistedFileNameAndDir();
         Persister.setPersisterPropertiesFile("persister_integ.properties");
+        // FIXME: old version of file is cached so override prefix (b/c file changed is not the one on classpath)
+        Persister.setPersistedFileSuffix("_prod");
         // FIXME: writeReords is cribbed from Bank.saveALlRecords(), refactor into common method?
         Persister.writeRecordsToCsv(obfuscatedRecords.owners(), "owners");
         Map<Class<? extends Account>, List<Account>> splitAccounts = obfuscatedRecords

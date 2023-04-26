@@ -1,6 +1,8 @@
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 
 public record Owner(String name, long id, Date dob, String ssn, String address, String address2, String city, String state,
@@ -12,10 +14,10 @@ public record Owner(String name, long id, Date dob, String ssn, String address, 
     }
 
     public static Owner fromCSV(final String csv) throws SerializationException {
-        final String[] fields = csv.split(",");
+        final String[] fields = csv.split(DELIMITER);
         final String version = fields[fields.length - 1];
         if (!version.trim().equals("v1")) {
-            throw new SerializationException("Verison incorrect or missing, expected v1 but was " + version);
+            throw new SerializationException("Verison incorrect or missing, expected v1 but was " + version + ". Record:'" + List.of(fields) + "'");
         }
         if (fields.length != COLUMNS.length) {
             throw new SerializationException(String.format("not enough fields, should be %d but was %d: %s", COLUMNS.length, fields.length, csv));
@@ -38,7 +40,8 @@ public record Owner(String name, long id, Date dob, String ssn, String address, 
 
     @Override
     public String toCSV() throws SerializationException {
-        return String.format("%d,%s,%d,%s,%s,%s,%s,%s,%s,%s", id, name, dob.getTime(), (ssn != null) ? ssn : "", (address != null) ? address : "", (address2 != null) ? address2 : "", (city != null) ? city : "", (state != null) ? state : "", (zip != null) ? zip : "", "v1");
+        List<String> values = List.of(id, name, dob.getTime(), (ssn != null) ? ssn : "", (address != null) ? address : "", (address2 != null) ? address2 : "", (city != null) ? city : "", (state != null) ? state : "", (zip != null) ? zip : "", "v1").stream().map(Object::toString).collect(Collectors.toList());
+        return String.join(DELIMITER + " ", values);
     }
 
     public Long getId() {
