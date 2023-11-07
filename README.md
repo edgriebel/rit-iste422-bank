@@ -26,7 +26,7 @@ _TODO_
 
 # UML Entity diagram
 
-[![demo](https://puml-demo.herokuapp.com/github/edgriebel/rit-iste422-bank/blob/master/uml_entity.puml)](https://puml-demo.herokuapp.com/github/edgriebel/rit-iste422-bank/blob/master/uml_entity.puml)
+[![demo](https://www.plantuml.com/plantuml/proxy?src=https://github.com/edgriebel/rit-iste422-bank/raw/master/uml_entity.puml)](https://www.plantuml.com/plantuml/proxy?src=https://github.com/edgriebel/rit-iste422-bank/raw/master/uml_entity.puml)
 
 Source for diagram: [uml_entity.puml](uml_entity.puml)
 
