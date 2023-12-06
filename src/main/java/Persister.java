@@ -1,6 +1,7 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -22,8 +23,8 @@ public class Persister {
     private static String persistedFileSuffix;
 
     public static String getFilename(String fileType) {
-        return String.format("%s/%s%s%s.csv",
-                persistedFileDir, fileType, persistedFilePrefix, persistedFileSuffix);
+        return String.format("%s%c%s%s%s.csv",
+                persistedFileDir, File.separatorChar, fileType, persistedFilePrefix, persistedFileSuffix);
     }
 
     private static void loadPersistedFileNameAndDir() throws IOException {

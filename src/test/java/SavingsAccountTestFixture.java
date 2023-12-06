@@ -6,6 +6,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,7 +30,7 @@ task runSavingsFixture(type: JavaExec) {
 public class SavingsAccountTestFixture {
     public static Logger logger = LogManager.getLogger(SavingsAccountTestFixture.class);
     // Note that we could also load the file from the classpath instead of hardcoding the pathname
-    static final String TEST_FILE = "src/test/resources/SavingsAccountTest.csv";
+    static final String TEST_FILE = "src/test/resources/SavingsAccountTest.csv".replace('/', File.separatorChar);
 
     record TestScenario(double initBalance,
                         double interestRate,

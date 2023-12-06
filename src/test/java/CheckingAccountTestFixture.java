@@ -9,6 +9,7 @@ import org.junit.runner.notification.Failure;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -168,7 +169,8 @@ public class CheckingAccountTestFixture {
         // now load these same scenarios from a file plus one more
         System.out.println("\n\n****** FROM FILE ******\n");
         // We could get the filename from the cmdline, e.g. "-f CheckingAccountScenarios.csv"
-        List<String> scenarioStringsFromFile = Files.readAllLines(Paths.get(TEST_FILE));
+        List<String> scenarioStringsFromFile = Files
+                .readAllLines(Paths.get(TEST_FILE.replace('/', File.separatorChar)));
         testScenarios = parseScenarioStrings(scenarioStringsFromFile);
         runJunitTests();
 

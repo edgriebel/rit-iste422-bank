@@ -44,7 +44,7 @@ public class Obfuscator {
      */
     public void updateIntegProperties() throws IOException {
         Properties props = new Properties();
-        File propsFile = new File("src/test/resources/persister_integ.properties");
+        File propsFile = new File("src/test/resources/persister_integ.properties".replace('/', File.separatorChar));
         if (! propsFile.exists() || !propsFile.canWrite()) {
             throw new RuntimeException("Properties file must exist and be writable: " + propsFile);
         }
@@ -85,9 +85,11 @@ public class Obfuscator {
         obfuscator.updateIntegProperties();
         Persister.resetPersistedFileNameAndDir();
         Persister.setPersisterPropertiesFile("persister_integ.properties");
-        // FIXME: old version of file is cached so override prefix (b/c file changed is not the one on classpath)
+        // old version of file is cached so we need to override prefix (b/c file changed
+        // is not the one on classpath)
         Persister.setPersistedFileSuffix("_prod");
-        // FIXME: writeReords is cribbed from Bank.saveALlRecords(), refactor into common method?
+        // writeReords is cribbed from Bank.saveALlRecords(), refactor into common
+        // method?
         Persister.writeRecordsToCsv(obfuscatedRecords.owners(), "owners");
         Map<Class<? extends Account>, List<Account>> splitAccounts = obfuscatedRecords
                 .accounts()
