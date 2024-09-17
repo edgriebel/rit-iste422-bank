@@ -1,0 +1,65 @@
+@startuml
+' substitutes visibility icons with characters
+skinparam classAttributeIconSize 0
+' don't show the (I) or (C) icons in class names
+hide circle
+
+class SavingsAccount {
+ -{static}logger: Logger
+ ~interestRate: double
+ +monthEnd()
+}
+
+class CheckingAccount {
+ +{static}logger: Logger
+ -checkNumber: int
+ +writeCheck(name: String, amount: double)
+ +monthEnd()
+}
+
+class Register {
+ ~logger: Logger
+ ~entryList: List< <String, Double> >
+ +add(entryName: String, amount: Double)
+ +getEntries(): List< <String, Double> >
+}
+
+class Owner {
+ -name: String
+}
+
+class Account << abstract >> {
+ +{static}logger: Logger
+ -balance: double
+ #name: String
+ #owner: Owner
+ #register: Register
+ #minimumBalance: double
+ #belowMinimumFee: double
+ +deposit(amount: double)
+ +deposit(amount: double, registerEntry: String)
+ +withdraw(amount: double)
+ +withdraw(amount: double, registerEntry: String)
+ +generateStatement(): List<String>
+ +getRegisterEntries(): List< <String, Double> >
+ +{abstract}monthEnd()
+}
+
+class Runner {
+ +{static}main(args: String[])
+}
+
+Account <|-- SavingsAccount
+Account <|-- CheckingAccount
+Account --o Register
+Account --* Owner
+
+Runner --* SavingsAccount
+Runner --* CheckingAccount
+
+note as N1
+  Note: Simple getters/setters
+  and constructors are
+  omitted from classes
+end note
+@enduml

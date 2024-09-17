@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+        <File name="MyFile" fileName="test.log" immediateFlush="true" append="false">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <!-- in testing mode we send everything to console -->
+        <!-- In a "real" environment we'd probably want to send only errors to the 
+             console and look at detailed output in our Continuous Integration tool -->
+        <Root level="debug">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MyFile"/>
+        </Root>
+        <Logger name="SavingsAccount" level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>

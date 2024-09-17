@@ -1,0 +1,123 @@
+           T E S T   P L A N   f o r   R I T   B A N K   P R O J E C T
+          -------------------------------------------------------------
+Note: << >> indicates values that would be completed for a sufficient test plan
+
+Account:
+--------
+- Creation
+  - Given a new account, when we create with balance of 0, then Balance should be 0
+  - Given a new account, when we create with balance of 0, then register should have only opening amount
+  - Given a new account, when we create with balance of 100, then Balance should be 100
+  - Given a new account, when we create with balance of 100, then register should have only opening amount
+
+- Deposit
+  - Does deposit work?
+    - Given a new account, When we deposit $10, then balance should be $10
+    - Given a new account, when we deposit $10, then register should have $10
+  - What if deposit is negative?
+    - Q: Do nothing or throw exception?
+
+- Withdraw
+  - does withdraw work?
+    - <<create given-when-then statement for one and two w/d>>
+  - does correct item show up in register?
+    - <<create given-when-then statement for one and two w/d>>
+  - Exception thrown if we w/d below zero?
+    - <<create given-when-then statement>>
+
+SavingsAccount:
+---------------
+- no-arg constructor
+  - Given no acccount, when SavingsAccount created with no arguments, then balance should be zero
+  - Given no acccount, when SavingsAccount created with no arguments, then interest rate should be zero
+  - Given no acccount, when SavingsAccount created with no arguments, then account name should be populated
+  - Given no acccount, when SavingsAccount created with no arguments, then Owner should be populated
+  - Register:
+    - Given a new account, when new account created, then there should be no register entries
+
+
+- Regular constructor
+  - what if interest rate is negative?
+    - Given no account, when SavingsAccount created with negative interest rate, then an exception is thrown
+  - Q: what if any arguments are null?
+  - if I pass a name, does correct name get stored?
+    - given no account, when created with name, then account has correct name
+  - if I pass a balance, does correct balance get stored?
+    - given no account, when created with balance, then account has correct balance
+  - if I pass an interest rate, does correct interest get stored?
+    - <<create given-when-then statement>>
+  - if I pass a owner, does correct owner get stored?
+    - <<create given-when-then statement>>
+
+- << Question: Do we need to test Deposit and w/d in this class too? Is any new functionality introduced? Could there be?>>
+
+- monthEnd
+  - Is interest calculation correct?
+    - Given savings account with 100 balance, when month end is called, then no exceptions should be thrown
+    - Given savings account with 100 balance and 10% interest, when month end is called, then balance should be 100.0 + (100.0 * 0.10 * (1.0 / 12.0)) = <<value>>
+    - Given savings account with 100 balance and 10% interest, when month end is called, then value in the Interest register entry should be (100.0 * 0.10 * (1.0 / 12.0)) = <<value>>
+    - Given savings account with 100 balance, when month end is called twice, then two interest records are created
+    - Given savings account with 100 balance, when month end is called twice, then balance should be <TODO: insert manually calculated balance here>
+    - Q: If interest rate is zero, do we write a zero-value register entry?
+    - Q: If balance is zero, do we write a zero-value register entry?
+  - Is minimum balance calculation correct?
+    - Given savings account with 10 balance, minimum balance of 20, and minimum balance charge of 4.00, when month end is called, then register entry for minimum balance charge of 5 is created
+    - Given savings account with 10 balance, minimum balance of 20, and minimum balance charge of 4.00, when month end is called, then balance should be 5
+    - Q: what happens when minimum balance charge is greater than account balance?
+
+- GenerateStatement
+  - <<What things would we test for here?>>
+    - <<create given-when-then statements>>
+- toString
+  - Does it display correct interest rate?
+    - <<create a given-when-then statement where we create with an interest rate then look for it in the string. See CheckingAccount toString tests.>>
+  - Does it display correct balance?
+    - <<create a given-when-then statement where we create a deposit then look for it in the string. See CheckingAccount toString tests.>>
+
+
+CheckingAccount:
+----------------
+- no-arg constructor
+  - <<What things should we test?>>
+    - <<create given-when-then statements>>
+
+- Regular constructor
+  - <<What things should we test?>>
+    - <<create given-when-then statements>>
+
+- << Question: Do we need to test Deposit and w/d in this class too? Is any new functionality introduced? Could there be?>>
+
+- WriteCheck
+  - Is a correct register created for one and two checks?
+    - <<create given-when-then statements>>
+  - Is the balance updated correctly for one and two checks?
+    - <<create given-when-then statements>>
+  - Q: What should the behavior be if we write a negative or zero check?
+
+- monthEnd
+  - Do registers get generated properly?
+    - Given checking account with 100 balance, when write $100 check and month end is called, then last item in register should have check #1
+    - Given checking account with 100 balance, when month end is called, then last item in register should have check #0 and "month end" is in the description
+    - <<create given-when-then statement for multiple month-ends being run>>
+  - <<Is there any other month-end functionality we need to test for?>>
+
+- toString
+  <<Note: to reduce false positives, we choose numbers so that the balance doesn't include the check number.>>
+  <<Note: we don't look for the exact string being returned to prevent false negatives due to small changes to the toString() implementation.>>
+  - Does string representation include check number and balance?
+    - verify check number: Given a checking account with zero starting balance, when we write one check for 29., does toString() match regexp "Check.*[^0-9]1"
+    - verify balance: Given a checking account with zero starting balance, when we write one check for 29., does toString() match regexp "[^0-9]29[^0-9]"
+    - verify check number: Given a checking account with zero starting balance, when we write one check for 29. and one for 31., does toString() match regexp "Check.*[^0-9]2"
+    - verify balance: Given a checking account with zero starting balance, when we write one check for 29. and one for 31., does toString() match regexp "[^0-9]60[^0-9]"
+
+Register:
+---------
+- <<What things should we test for?>>
+    - <<create given-when-then statements for them>>
+
+Owner:
+------
+- Constructor:
+  - Does name get set correctly?
+    - <<create given-when-then statement>>
+  - Q: is it OK to have null/empty string for name?

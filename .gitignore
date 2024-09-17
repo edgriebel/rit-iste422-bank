@@ -1,0 +1,14 @@
+/.gradle/
+build
+bin
+.classpath
+.project
+.settings
+*.log
+.idea
+/*.csv
+src/test/resources/*_prod.csv
+*.swp
+*~
+src/test/resources/checking_integ.csvpersister_integ.properties
+.DS_Store

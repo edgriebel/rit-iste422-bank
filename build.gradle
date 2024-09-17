@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'pmd'
+}
+
+java.sourceCompatibility "1.16"
+java.targetCompatibility "1.16"
+
+group 'edu.rit.iste-422'
+version '1.0-SNAPSHOT'
+
+ext {
+    javaMainClass = 'Runner'
+}
+
+test {
+    testLogging.showStandardStreams = true
+}
+
+application {
+    mainClass = javaMainClass
+}
+
+task runCheckingFixture(type: JavaExec) {
+    group = "Execution"
+    description = "Run CheckingAccountTestFixture class"
+    classpath = sourceSets.test.runtimeClasspath
+    main = "CheckingAccountTestFixture"
+}
+
+task obfuscator(type: JavaExec) {
+    main = 'Obfuscator'
+        classpath = sourceSets.test.runtimeClasspath
+}
+
+repositories {
+    mavenCentral()
+}
+
+checkstyle {
+  configFile file("${project.rootDir}/config/checkstyle/sun_checks.xml")
+}
+
+tasks.withType(Checkstyle) {
+	reports {
+		html.required = true
+	}
+}
+
+pmd {
+  ignoreFailures = true
+  consoleOutput = true
+  ruleSets = [
+	"category/java/errorprone.xml", 
+	// "category/java/design.xml", 
+	"category/java/performance.xml"
+	] 
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation 'org.apache.logging.log4j:log4j-api:2.13.3'
+    implementation 'org.apache.logging.log4j:log4j-core:2.13.3'
+}

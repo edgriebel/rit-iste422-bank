@@ -1,0 +1,1 @@
+run = "./gradlew clean compileJava test run"

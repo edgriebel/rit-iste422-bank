@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{mm:ss.SSS} %-1level class:%logger{36} - %msg%n" />
+        </Console>
+        <File name="MyFile" fileName="runner.log" immediateFlush="true" append="false">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+        <!-- collect timings across multiple runs ==> append=true -->
+        <File name="Timer" fileName="timer.log" immediateFlush="true" append="true">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console" level="info"/>
+            <AppenderRef ref="MyFile" level="debug"/>
+            <!-- this writes timing information, see logging to "timer" -->
+            <AppenderRef ref="Timer" level="off"/> <!-- capture nothing by default -->
+        </Root>
+        <!-- This is an example of how we can up the logging for a specific class -->
+        <!-- In this case, we may be actively developing SavingsAccount so we want
+             to see debug on the console for this class -->
+        <Logger name="SavingsAccount" level="debug" additivity="false">
+            <!-- <AppenderRef ref="Console"/> -->
+        </Logger>
+        <!-- and here we enable the timers to go to the Timer ref -->
+        <Logger name="timer" level="info" additivity="false">
+            <AppenderRef ref="Timer"/>
+        </Logger>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,3 @@
+id ! accountId ! entryName ! amount ! date ! version
+15 ! 100 ! OPEN ! 0.000000 ! 1673589565701 ! v1
+16 ! 200 ! OPEN ! 0.000000 ! 1673589565706 ! v1
