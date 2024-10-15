@@ -3,7 +3,7 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Date;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +16,7 @@ public class CheckingAccountTest {
         acct = new CheckingAccount("test", -1, 100, 0, -1);
         assertThat(acct, notNullValue());
 	}
-	
+
     @Test
     public void givenCheckingAccountBalance100_whenWrite100Check_thenBalanceIsZero() throws Exception {
         acct.writeCheck("Target", 100, new Date());
