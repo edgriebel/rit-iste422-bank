@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collection;
@@ -92,6 +93,27 @@ public class JunitTestExamples {
         assertThat(33, not(is(99)));
         assertThat(List.of(1, 2, 3), not(hasItem(99)));
     }
+
+    // we expect this to fail because there's no data in the list,
+    // so let JUnit look for that instead of wrapping it with a try/catch block
+    // like in the next method
+    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    public void testNoDataRaisesException() throws Exception {
+        List<String> myData = List.of();
+        System.out.println(myData.get(0));
+    }
+    @Test
+    public void testNoDataRaisesException_undesirable() throws Exception {
+        List<String> myData = List.of();
+        try {
+            System.out.println(myData.get(0));
+            fail("No data should have thrown ArrayIndexOutOfBoundsException");
+        }
+        catch (ArrayIndexOutOfBoundsException ex) {
+            // note that an empty catch block is an anti-pattern in Java as well
+        }
+    }
+
 
     /*****************************************************
      * These 2 tests illustrate why you should use a more specific comparison if available.
