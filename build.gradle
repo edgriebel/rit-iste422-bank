@@ -30,6 +30,13 @@ task runCheckingFixture(type: JavaExec) {
     main = "CheckingAccountTestFixture"
 }
 
+task runSavingsFixture(type: JavaExec) {
+    group = "Execution"
+    description = "Run SavingsAccountTestFixture class"
+    classpath = sourceSets.test.runtimeClasspath
+    main = "SavingsAccountTestFixture"
+}
+
 task obfuscator(type: JavaExec) {
     main = 'Obfuscator'
         classpath = sourceSets.test.runtimeClasspath

@@ -94,7 +94,6 @@ public class CheckingAccountTestFixture {
         }
     }
 
-    // TODO this could be added to TestScenario class
     private static List<Double> parseListOfAmounts(String amounts) {
         if (amounts.trim().isEmpty()) {
             return List.of();
@@ -108,7 +107,6 @@ public class CheckingAccountTestFixture {
         return ret;
     }
 
-    // TODO this could be added to TestScenario class
     private static TestScenario parseScenarioString(String scenarioAsString) {
         String [] scenarioValues = scenarioAsString.split(",");
         // should probably validate length here
