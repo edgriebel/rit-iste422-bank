@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class BankRunner {
@@ -28,10 +29,17 @@ public class BankRunner {
                 delay = Integer.parseInt(args[1]);
             }
         }
+        count = -1;
+        delay = 10;
         Random random = new Random();
+	    List<Bank> banks = new ArrayList<>();
 
         do {
             Bank bank = new Bank();
+            if (count % 5 == 0) {
+	    	// save every 5 to illustrate a memory leak
+	    	 banks.add(bank);
+	    }
             long ownerId = bank.putOwner(new Owner("Jane Smith"));
 
             System.out.println("Creating accounts....");

@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'pmd'
+    id "com.github.spotbugs" version "6.0.26"
 }
 
 java.sourceCompatibility "1.16"
@@ -48,23 +49,35 @@ repositories {
 
 checkstyle {
   configFile file("${project.rootDir}/config/checkstyle/sun_checks.xml")
-}
-
-tasks.withType(Checkstyle) {
-	reports {
-		html.required = true
-	}
+  showViolations = false
+  toolVersion = "10.19.0"
 }
 
 pmd {
   ignoreFailures = true
-  consoleOutput = true
+  consoleOutput = false
+  //    toolVersion = "6.55.0"
+  toolVersion = "7.7.0" // v7 only works with Gradle 8.6+
   ruleSets = [
 	"category/java/errorprone.xml", 
 	// "category/java/design.xml", 
 	"category/java/performance.xml"
-	] 
+  ]
 }
+
+spotbugs {
+  ignoreFailures = true
+  reportsDir = file("$buildDir/reports/spotbugs")
+}
+
+tasks.spotbugsMain {
+    reports.create("html") {
+        required = true
+        outputLocation = file("$buildDir/reports/spotbugs.html")
+        setStylesheet("fancy-hist.xsl")
+    }
+}
+
 
 dependencies {
     testImplementation 'junit:junit:4.13.1'
