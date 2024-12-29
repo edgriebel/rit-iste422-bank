@@ -94,10 +94,6 @@ public class CheckingAccountTestFixture {
         }
     }
 
-<<<<<<< HEAD
-    // TODO this could be added to TestScenario class
-=======
->>>>>>> other-repo/main
     private static List<Double> parseListOfAmounts(String amounts) {
         if (amounts.trim().isEmpty()) {
             return List.of();
