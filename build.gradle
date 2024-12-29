@@ -3,7 +3,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'pmd'
-    id "com.github.spotbugs" version "6.0.26"
+    id 'com.github.spotbugs' version '6.0.26'
 }
 
 java.sourceCompatibility "1.16"
@@ -12,16 +12,21 @@ java.targetCompatibility "1.16"
 group 'edu.rit.iste-422'
 version '1.0-SNAPSHOT'
 
-ext {
-    javaMainClass = 'Runner'
-}
-
 test {
     testLogging.showStandardStreams = true
 }
 
 application {
-    mainClass = javaMainClass
+    // This is the class name with the main() method
+    mainClass = 'Runner'
+}
+
+task runBank(type: JavaExec) {
+    group = "Execution"
+    description = "Run the Bank application"
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['--loop', '1000']
+    main = "BankRunner"
 }
 
 task runCheckingFixture(type: JavaExec) {
@@ -40,7 +45,14 @@ task runSavingsFixture(type: JavaExec) {
 
 task obfuscator(type: JavaExec) {
     main = 'Obfuscator'
-        classpath = sourceSets.test.runtimeClasspath
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+task runObfuscatorUtils(type: JavaExec) { 
+    group = "Execution"; 
+    description = "Run example code in ObfuscatorUtils class"
+    classpath = sourceSets.test.runtimeClasspath; 
+    main = "ObfuscatorUtils" 
 }
 
 repositories {
@@ -48,26 +60,29 @@ repositories {
 }
 
 checkstyle {
-  configFile file("${project.rootDir}/config/checkstyle/sun_checks.xml")
-  showViolations = false
-  toolVersion = "10.19.0"
+    // sun_checks.xml needs to be in the folder or checkstyle target will fail
+    configFile file("${project.rootDir}/config/checkstyle/sun_checks.xml")
+    // keep the build output clean
+    showViolations = false
+    toolVersion = "10.19.0"
 }
 
 pmd {
-  ignoreFailures = true
-  consoleOutput = false
-  //    toolVersion = "6.55.0"
-  toolVersion = "7.7.0" // v7 only works with Gradle 8.6+
-  ruleSets = [
+    ignoreFailures = true
+    consoleOutput = false
+    toolVersion = "7.7.0" // v7 only works with Gradle 8.6+
+    ruleSets = [
 	"category/java/errorprone.xml", 
 	// "category/java/design.xml", 
 	"category/java/performance.xml"
-  ]
+    ]
 }
 
 spotbugs {
-  ignoreFailures = true
-  reportsDir = file("$buildDir/reports/spotbugs")
+    // Keeps build running when there's issues
+    ignoreFailures = true 
+    // keep in reports folder, otherwise it throws report in $buildDir
+    reportsDir = file("$buildDir/reports/spotbugs")
 }
 
 tasks.spotbugsMain {
