@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class BankRunner {
@@ -29,9 +30,15 @@ public class BankRunner {
             }
         }
         Random random = new Random();
+	// deliberately introduce a memory leak by saving some bank values
+	List<Bank> banks = new ArrayList<>();
 
         do {
             Bank bank = new Bank();
+            if (count % 5 == 0) {
+                // save every 5 to illustrate a memory leak
+                banks.add(bank);
+	    }
             long ownerId = bank.putOwner(new Owner("Jane Smith"));
 
             System.out.println("Creating accounts....");
@@ -60,7 +67,9 @@ public class BankRunner {
             bank.saveAllRecords();
             count--;
             if (count != 0) {
-                System.out.println("Iterations left: " + count);
+                if (count > 0) {
+                    System.out.println("Iterations left: " + count);
+                }
                 System.out.printf("Iteration = %d, sleeping for %d...%n", count+1, delay);
                 Thread.sleep(delay);
             }

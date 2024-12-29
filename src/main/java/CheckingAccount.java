@@ -26,6 +26,10 @@ public class CheckingAccount extends Account {
         this.checkNumber = checkNumber;
     }
 
+    public long getCheckNumber() {
+        return checkNumber;
+    }
+
     /**
      * write a check
      *
